@@ -1,0 +1,12 @@
+(function($) {
+    $(document).ready(function() {
+	
+	$('#Rplot').scianimator({
+	    'images': ['images/Rplot_run_0001_TS_0001.png', 'images/Rplot_run_0001_TS_0002.png', 'images/Rplot_run_0001_TS_0003.png', 'images/Rplot_run_0001_TS_0004.png', 'images/Rplot_run_0001_TS_0005.png', 'images/Rplot_run_0001_TS_0006.png', 'images/Rplot_run_0001_TS_0007.png', 'images/Rplot_run_0001_TS_0008.png', 'images/Rplot_run_0001_TS_0009.png', 'images/Rplot_run_0001_TS_00010.png', 'images/Rplot_run_0001_TS_00011.png', 'images/Rplot_run_0001_TS_00012.png', 'images/Rplot_run_0001_TS_00013.png', 'images/Rplot_run_0001_TS_00014.png', 'images/Rplot_run_0001_TS_00015.png', 'images/Rplot_run_0001_TS_00016.png', 'images/Rplot_run_0001_TS_00017.png', 'images/Rplot_run_0001_TS_00018.png', 'images/Rplot_run_0001_TS_00019.png', 'images/Rplot_run_0001_TS_00020.png', 'images/Rplot_run_0001_TS_00021.png', 'images/Rplot_run_0001_TS_00022.png', 'images/Rplot_run_0001_TS_00023.png', 'images/Rplot_run_0001_TS_00024.png', 'images/Rplot_run_0001_TS_00025.png', 'images/Rplot_run_0001_TS_00026.png', 'images/Rplot_run_0001_TS_00027.png', 'images/Rplot_run_0001_TS_00028.png', 'images/Rplot_run_0001_TS_00029.png', 'images/Rplot_run_0001_TS_00030.png', 'images/Rplot_run_0001_TS_00031.png', 'images/Rplot_run_0001_TS_00032.png', 'images/Rplot_run_0001_TS_00033.png', 'images/Rplot_run_0001_TS_00034.png', 'images/Rplot_run_0001_TS_00035.png', 'images/Rplot_run_0001_TS_00036.png', 'images/Rplot_run_0001_TS_00037.png', 'images/Rplot_run_0001_TS_00038.png', 'images/Rplot_run_0001_TS_00039.png', 'images/Rplot_run_0001_TS_00040.png', 'images/Rplot_run_0001_TS_00041.png', 'images/Rplot_run_0001_TS_00042.png', 'images/Rplot_run_0001_TS_00043.png', 'images/Rplot_run_0001_TS_00044.png', 'images/Rplot_run_0001_TS_00045.png', 'images/Rplot_run_0001_TS_00046.png', 'images/Rplot_run_0001_TS_00047.png', 'images/Rplot_run_0001_TS_00048.png', 'images/Rplot_run_0001_TS_00049.png', 'images/Rplot_run_0001_TS_00050.png', 'images/Rplot_run_0001_TS_00051.png', 'images/Rplot_run_0001_TS_00052.png', 'images/Rplot_run_0001_TS_00053.png', 'images/Rplot_run_0001_TS_00054.png', 'images/Rplot_run_0001_TS_00055.png', 'images/Rplot_run_0001_TS_00056.png', 'images/Rplot_run_0001_TS_00057.png', 'images/Rplot_run_0001_TS_00058.png', 'images/Rplot_run_0001_TS_00059.png', 'images/Rplot_run_0001_TS_00060.png'],
+	    'width': 480,
+	    'delay': 100,
+	    'loopMode': 'loop'
+	});
+	$('#Rplot').scianimator('play');
+    });
+})(jQuery);
