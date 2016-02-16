@@ -1,13 +1,5 @@
-import grass.script as grass
-from PIL import Image
-import wx
-import random
-import re
-import time
-import math
-#from rpy2 import robjects
-from datetime import tzinfo, timedelta, datetime
 
+import random
 def gene_exchanceANTIGO(indiv_LOCI_indA,indiv_LOCI_indB,LOCI_gene_exchange_rate):
     aux_IndA = []
     aux_IndB = []

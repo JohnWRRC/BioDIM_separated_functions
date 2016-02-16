@@ -1,12 +1,5 @@
-import grass.script as grass
-from PIL import Image
-import wx
-import random
-import re
-import time
 import math
-#from rpy2 import robjects
-from datetime import tzinfo, timedelta, datetime
+
 
 def estimate_effectivedistance(input_xy_initpos, input_xy, input_xy_quadrant,landscape_matrix):
     effect_dist=[]
