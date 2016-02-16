@@ -17,17 +17,54 @@ ID_EXIT=110
 #---------------------------------------------------
 from create_synthesis import create_synthesis
 #---------------------------------------------------
-import distance_between_indiv
+from distance_between_indiv import  distance_between_indiv 
 #---------------------------------------------------
-import gene_exchance
+from gene_exchance import gene_exchance
 #---------------------------------------------------
-###############CARE CARE CARE CARE
-###############CARE CARE CARE CARE
-###############CARE CARE CARE CARE
-import gene_exchanceANTIGO
+
+from  gene_exchanceANTIGO import gene_exchanceANTIGO
 #---------------------------------------------------
-import LOCI_start
+from  LOCI_start import LOCI_start
 #---------------------------------------------------
+
+#---------------------------------------------------
+from read_table import read_table
+#---------------------------------------------------
+
+#---------------------------------------------------
+from estimate_effectivedistance import estimate_effectivedistance
+ #---------------------------------------------------
+from check_overpopulation_onpatch import check_overpopulation_onpatch
+#---------------------------------------------------
+from reset_isdispersing import reset_isdispersing
+#---------------------------------------------------
+from identify_habareapix import identify_habareapix
+#---------------------------------------------------
+from identify_patchid import identify_patchid
+#---------------------------------------------------
+
+#---------------------------------------------------
+from select_landscape_grassnames import select_landscape_grassnames
+#----------------------------------------------------------------------
+from  export_raster_from_grass import export_raster_from_grass
+#----------------------------------------------------------------------
+from color_pallete import color_pallete
+#----------------------------------------------------------------------
+from color_palleteantiga import color_palleteantiga
+#----------------------------------------------------------------------
+from disperse_random_walk import disperse_random_walk
+#----------------------------------------------------------------------
+
+#----------------------------------------------------------------------
+from  getForest
+#----------------------------------------------------------------------
+def populate(forest, nPop):
+    return random.sample(forest, nPop)
+#----------------------------------------------------------------------
+import choose_dispersaldirection
+
+#----------------------------------------------------------------------
+
 def estimate_movement_cost(actualcost,distfromedgePix, aux_xy):
     protecdness=get_safetyness_mortality(tab_in=Form1.tab_safetyness, distPix=distfromedgePix)
     
@@ -86,9 +123,7 @@ def get_safetyness_mortality(tab_in, distPix=0):
                 elif  Form1.species_profile=="Highly generalist":
                     return tab_in[line-1][5]
     return 0
-#---------------------------------------------------
-import read_table
-#---------------------------------------------------
+
 class TZ(tzinfo):
     import utcoffset
 #---------------------------------------------------
@@ -298,17 +333,7 @@ def organize_output(moment, grassname_habmat, isdispersing, isfemale, islive, to
             file_output_landscape.close()
     create_synthesis(output_filename_indiv)
 
-#---------------------------------------------------
-import estimate_effectivedistance
-#---------------------------------------------------
-import check_overpopulation_onpatch
-#---------------------------------------------------
-import reset_isdispersing
-#---------------------------------------------------
-import identify_habareapix
-#---------------------------------------------------
-import identify_patchid
-#---------------------------------------------------
+
 def estimate_start_popsize(landscape_grassname_habmat):
     tmp_pland=landscape_grassname_habmat[19:22]
     PixelAreaHA=Form1.spatialresolution*Form1.spatialresolution
@@ -324,9 +349,9 @@ def pickup_one_landscape():
     '''This part select one random landscape when
        from the Spatial Data Base
     '''
-    landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_hqmqlq_quality, landscape_grassname_hqmqlq_AREAqual, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual=select_landscape_grassnames.select_landscape_grassnames()
+    landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_hqmqlq_quality, landscape_grassname_hqmqlq_AREAqual, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual=select_landscape_grassnames()
     
-    export_raster_from_grass.export_raster_from_grass(landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist,landscape_grassname_habmat_pid,landscape_grassname_habmat_areapix,landscape_grassname_hqmqlq_quality,landscape_grassname_hqmqlq_AREAqual,landscape_grassname_frag_pid,landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual)
+    export_raster_from_grass(landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist,landscape_grassname_habmat_pid,landscape_grassname_habmat_areapix,landscape_grassname_hqmqlq_quality,landscape_grassname_hqmqlq_AREAqual,landscape_grassname_frag_pid,landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual)
     
     landscape_head, landscape_matrix=read_landscape_head_ascii_standard('random_landscape_hqmqlq.asc',"int")
     landscape_head, landscape_habdist=read_landscape_head_ascii_standard('random_landscape_habdist.asc',"float")
@@ -352,30 +377,8 @@ def pickup_one_landscape():
     
     return landscape_head, landscape_matrix, landscape_grassname_habmat, landscape_habdist, landscape_habmat_pid, landscape_habmat_areapix, landscape_hqmqlq_quality, landscape_hqmqlq_AREAqual, landscape_frag_pid, landscape_frag_AREApix,landscape_frag_AREAqual, landscape_dila01clean_pid, landscape_dila01clean_AREApix,landscape_dila01clean_AREAqual, landscape_dila02clean_pid, landscape_dila02clean_AREApix,landscape_dila02clean_AREAqual
     
-#---------------------------------------------------
-import select_landscape_grassnames
-#----------------------------------------------------------------------
-import export_raster_from_grass
-#----------------------------------------------------------------------
-import color_pallete
-#----------------------------------------------------------------------
-import color_palleteantiga
-#----------------------------------------------------------------------
-#import disperse_random_walk
 
-def disperse_random_walk(landscape_matrix, indiv_xy, movement_dist_sigma_pixel, indiv_totaldistance):
-    '''on landscape_matrix 1=HQ / 2=MQ / 3=LQ'''
-    modified_indiv_xy=[]
-    for i in range(len(indiv_xy)):
-        modified_indiv_xy.append(indiv_xy[i])
-   
-    for xp in range(len(modified_indiv_xy)):
-        modified_indiv_xy[xp][0]+=random.normalvariate(mu=0,sigma=movement_dist_sigma_pixel)   # random xpos
-        modified_indiv_xy[xp][1]+=random.normalvariate(mu=0,sigma=movement_dist_sigma_pixel)   # random ypos
 
-    modified_indiv_xy,changed_quadrant=check_landscaperange(modified_indiv_xy)
-    
-    return modified_indiv_xy, indiv_totaldistance,changed_quadrant
 
 
 
@@ -604,7 +607,7 @@ def plot_walk(landscape_matrix, indiv_xy, aux_isdispersing, aux_islive, nruns, a
     data = sum(landscape_matrix_temp, [])  # flatten data
     im.putdata(data)
 
-    pal = color_pallete.color_pallete()
+    pal = color_pallete()
 
     im.putpalette(pal)
 
@@ -638,15 +641,6 @@ def plot_walk(landscape_matrix, indiv_xy, aux_isdispersing, aux_islive, nruns, a
     
     random.seed()  #to release the random.seed()
 
-#----------------------------------------------------------------------
-import getForest
-#----------------------------------------------------------------------
-def populate(forest, nPop):
-    return random.sample(forest, nPop)
-#----------------------------------------------------------------------
-import choose_dispersaldirection
-
-#----------------------------------------------------------------------
 class Form1(wx.Panel):
     def __init__(self, parent, id):
         wx.Panel.__init__(self, parent, id)
@@ -655,8 +649,8 @@ class Form1(wx.Panel):
         Form1.plotmovements=0
         Form1.include_probdeath=0
         
-        Form1.tab_safetyness=read_table.read_table("_models_safetyness.txt")
-        Form1.tab_mortality =read_table.read_table("_models_mortality.txt")
+        Form1.tab_safetyness=read_table("_models_safetyness.txt")
+        Form1.tab_mortality =read_table("_models_mortality.txt")
         
         Form1.output_store_ongoingsteps_indiv=0
         Form1.output_store_ongoingsteps_landscape=0
@@ -735,7 +729,7 @@ class Form1(wx.Panel):
         im = Image.new('P', (len(Form1.landscape_matrix),len(Form1.landscape_matrix)))  # 'P' for palettized
         data = sum(Form1.landscape_matrix, [])  # flatten data
         im.putdata(data)
-        pal = color_pallete.color_pallete()
+        pal = color_pallete()
         im.putpalette(pal)
         im.save(Form1.background_filename[0])
             
@@ -861,7 +855,7 @@ class Form1(wx.Panel):
             im = Image.new('P', (len(Form1.landscape_matrix),len(Form1.landscape_matrix)))  # 'P' for palettized
             data = sum(Form1.landscape_matrix, [])  # flatten data
             im.putdata(data)
-            pal = color_pallete.color_pallete()
+            pal = color_pallete()
             im.putpalette(pal)
             im.save(Form1.background_filename[0])
                 
@@ -943,48 +937,48 @@ class Form1(wx.Panel):
                     indiv_dispdirectionX.append(choose_dispersaldirection.choose_dispersaldirection())
                     indiv_dispdirectionY.append(choose_dispersaldirection.choose_dispersaldirection())
                     
-                    aux_LOCI=LOCI_start.LOCI_start(aux_loci_struc=Form1.LOCI_structure)
+                    aux_LOCI=LOCI_start(aux_loci_struc=Form1.LOCI_structure)
                     indiv_LOCI.append(aux_LOCI)
                     indiv_LOCI_START.append(aux_LOCI)
                     indiv_number_of_meetings.append(0)
                     
                     if Form1.species_profile=="Habitat dependent":
-                        indiv_whichpatchid.append(identify_patchid.identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_habmat_pid))
+                        indiv_whichpatchid.append(identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_habmat_pid))
                         if Form1.include_habitatquality=="HabitatQuality_YES":
-                            indiv_habareapix.append(identify_habareapix.identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_hqmqlq_AREAqual))
+                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_hqmqlq_AREAqual))
                             Form1.using = "landscape_hqmqlq_AREAqual"
                         else:
-                            indiv_habareapix.append(identify_habareapix.identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_habmat_areapix))
+                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_habmat_areapix))
                             Form1.using = "landscape_habmat_areapix"
                             
                     elif Form1.species_profile=="Frag. dependent" or Form1.species_profile=="Core dependent":
                         ###CHECK = I need to change here, because I still not processed
                         ###    AREAqual for FRAGs
                         ############ NOW ARE OK - BUT IS GOOD TO CHECK IT OUT
-                        indiv_whichpatchid.append(identify_patchid.identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_frag_pid))
+                        indiv_whichpatchid.append(identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_frag_pid))
                         if Form1.include_habitatquality=="HabitatQuality_YES":
-                            indiv_habareapix.append(identify_habareapix.identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_frag_AREAqual))
+                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_frag_AREAqual))
                             Form1.using = "landscape_frag_AREAqual"
                         else:
-                            indiv_habareapix.append(identify_habareapix.identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_frag_AREApix))
+                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_frag_AREApix))
                             Form1.using = "landscape_frag_areapix"
                     
                     elif Form1.species_profile=="Moderately generalist":
-                        indiv_whichpatchid.append(identify_patchid.identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_dila01clean_pid))
+                        indiv_whichpatchid.append(identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_dila01clean_pid))
                         if Form1.include_habitatquality=="HabitatQuality_YES":
-                            indiv_habareapix.append(identify_habareapix.identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila01clean_AREAqual))
+                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila01clean_AREAqual))
                             Form1.using = "landscape_dila01clean_AREAqual"
                         else:
-                            indiv_habareapix.append(identify_habareapix.identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila01clean_AREApix))
+                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila01clean_AREApix))
                             Form1.using = "Form1.landscape_dila01clean_AREApix"
                             
                     elif Form1.species_profile=="Highly generalist":
-                        indiv_whichpatchid.append(identify_patchid.identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_dila02clean_pid))
+                        indiv_whichpatchid.append(identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_dila02clean_pid))
                         if Form1.include_habitatquality=="HabitatQuality_YES":
-                            indiv_habareapix.append(identify_habareapix.identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila02clean_AREAqual))
+                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila02clean_AREAqual))
                             Form1.using = "landscape_dila02clean_AREAqual"
                         else:
-                            indiv_habareapix.append(identify_habareapix.identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila02clean_AREApix))
+                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila02clean_AREApix))
                             Form1.using = "Form1.landscape_dila02clean_AREApix"
                             
                     elif  Form1.species_profile=="Random walk": 
@@ -1110,25 +1104,25 @@ class Form1(wx.Panel):
                                 if indiv_isfemale[num_of_indiv]==1:
                                     for other_indiv in range((num_of_indiv+1),len(indiv_xy)):
                                         if indiv_isfemale[other_indiv]==0:
-                                            indiv_distance_between_them_inmeters=distance_between_indiv.distance_between_indiv(xy_ind_a=indiv_xy[num_of_indiv],xy_ind_b=indiv_xy[other_indiv],spatialresolution=Form1.spatialresolution)
+                                            indiv_distance_between_them_inmeters=distance_between_indiv(xy_ind_a=indiv_xy[num_of_indiv],xy_ind_b=indiv_xy[other_indiv],spatialresolution=Form1.spatialresolution)
                                             if indiv_distance_between_them_inmeters < Form1.proximity_between_indiv_meters_threshold:
                                                 indiv_number_of_meetings[num_of_indiv]=indiv_number_of_meetings[num_of_indiv]+1
                                                 #indiv_number_of_meetings[other_indiv]=indiv_number_of_meetings[other_indiv]+1
                                                 #the above line increment MALE meetings
-                                                indiv_LOCI[num_of_indiv],indiv_LOCI[other_indiv]=gene_exchance.gene_exchance(indiv_LOCI_indA=indiv_LOCI[num_of_indiv],indiv_LOCI_indB=indiv_LOCI[other_indiv],LOCI_gene_exchange_rate=Form1.LOCI_gene_exchange_rate)
+                                                indiv_LOCI[num_of_indiv],indiv_LOCI[other_indiv]=gene_exchance(indiv_LOCI_indA=indiv_LOCI[num_of_indiv],indiv_LOCI_indB=indiv_LOCI[other_indiv],LOCI_gene_exchange_rate=Form1.LOCI_gene_exchange_rate)
                                         
                                 if Form1.species_profile=="Habitat dependent":
-                                    indiv_whichpatchid[num_of_indiv]=identify_patchid.identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_habmat_pid)
-                                    indiv_habareapix[num_of_indiv]=identify_habareapix.identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_habmat_areapix)
+                                    indiv_whichpatchid[num_of_indiv]=identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_habmat_pid)
+                                    indiv_habareapix[num_of_indiv]=identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_habmat_areapix)
                                 elif Form1.species_profile=="Frag. dependent" or Form1.species_profile=="Core dependent":
-                                    indiv_whichpatchid[num_of_indiv]=identify_patchid.identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_frag_pid)
-                                    indiv_habareapix[num_of_indiv]=identify_habareapix.identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_frag_AREApix)
+                                    indiv_whichpatchid[num_of_indiv]=identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_frag_pid)
+                                    indiv_habareapix[num_of_indiv]=identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_frag_AREApix)
                                 elif Form1.species_profile=="Moderately generalist":
-                                    indiv_whichpatchid[num_of_indiv]=identify_patchid.identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_dila01clean_pid)
-                                    indiv_habareapix[num_of_indiv]=identify_habareapix.identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila01clean_AREApix)
+                                    indiv_whichpatchid[num_of_indiv]=identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_dila01clean_pid)
+                                    indiv_habareapix[num_of_indiv]=identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila01clean_AREApix)
                                 elif Form1.species_profile=="Highly generalist":
-                                    indiv_whichpatchid[num_of_indiv]=identify_patchid.identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_dila02clean_pid)
-                                    indiv_habareapix[num_of_indiv]=identify_habareapix.identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila02clean_AREApix)
+                                    indiv_whichpatchid[num_of_indiv]=identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_dila02clean_pid)
+                                    indiv_habareapix[num_of_indiv]=identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila02clean_AREApix)
                                 elif Form1.species_profile=="Random walk":
                                     pass
                                 else:
@@ -1141,8 +1135,8 @@ class Form1(wx.Panel):
                         if Form1.plotmovements==1:
                             plot_walk(Form1.landscape_matrix, indiv_xy, aux_isdispersing=indiv_isdispersing, aux_islive=indiv_islive, nruns=nruns, aux_isdispersingRESET=indiv_isdispersingRESET, timestep=actual_step)
                         
-                        indiv_isdispersing=check_overpopulation_onpatch.check_overpopulation_onpatch(indiv_isdispersing, indiv_whichpatchid, indiv_habareapix, indiv_age,spatialresolution=Form1.spatialresolution,homerangesize=Form1.homerangesize)
-                        indiv_isdispersing, indiv_isdispersingRESET=reset_isdispersing.reset_isdispersing(indiv_isdispersing, indiv_whichpatchid, indiv_habareapix, indiv_islive, indiv_isdispersingRESET,spatialresolution=Form1.spatialresolution,homerangesize=Form1.homerangesize)
+                        indiv_isdispersing=check_overpopulation_onpatch(indiv_isdispersing, indiv_whichpatchid, indiv_habareapix, indiv_age,spatialresolution=Form1.spatialresolution,homerangesize=Form1.homerangesize)
+                        indiv_isdispersing, indiv_isdispersingRESET=reset_isdispersing(indiv_isdispersing, indiv_whichpatchid, indiv_habareapix, indiv_islive, indiv_isdispersingRESET,spatialresolution=Form1.spatialresolution,homerangesize=Form1.homerangesize)
                         
                         if actual_step in actual_step_range:
                             if Form1.plotmovements==1:
@@ -1155,7 +1149,7 @@ class Form1(wx.Panel):
                         #Below information is stored on each step
                         #print "Num.islive=",str(sum(indiv_islive))
                         if Form1.output_store_ongoingsteps_landscape==1 or Form1.output_store_ongoingsteps_indiv==1:
-                            indiv_effectivedistance=estimate_effectivedistance.estimate_effectivedistance(indiv_xy_initpos, indiv_xy,indiv_xy_quadrant,landscape_matrix=Form1.landscape_matrix)
+                            indiv_effectivedistance=estimate_effectivedistance(indiv_xy_initpos, indiv_xy,indiv_xy_quadrant,landscape_matrix=Form1.landscape_matrix)
                             organize_output(moment="ongoingstep",grassname_habmat=Form1.landscape_grassname_habmat, isdispersing=indiv_isdispersing,isfemale=indiv_isfemale, islive=indiv_islive, totaldistance=indiv_totaldistance, effectivedistance=indiv_effectivedistance, experiment_info=Form1.experiment_info, actualrun=nruns, actual_step=actual_step, actual_movementcost=indiv_movementcost, timestep_waslive=indiv_islive_timestep_waslive,number_of_meetings=indiv_number_of_meetings,LOCI_start=indiv_LOCI_START,LOCI_end=indiv_LOCI)
 
                     #END for actual_step in range(0,Form1.timesteps):    
@@ -1164,7 +1158,7 @@ class Form1(wx.Panel):
                     ##-----------------------------------
                     #out of for
                     
-                    indiv_effectivedistance=estimate_effectivedistance.estimate_effectivedistance(indiv_xy_initpos, indiv_xy,indiv_xy_quadrant,landscape_matrix=Form1.landscape_matrix)
+                    indiv_effectivedistance=estimate_effectivedistance(indiv_xy_initpos, indiv_xy,indiv_xy_quadrant,landscape_matrix=Form1.landscape_matrix)
                     
                     organize_output(moment="summary_of_a_run", grassname_habmat=Form1.landscape_grassname_habmat, isdispersing=indiv_isdispersing, isfemale=indiv_isfemale, islive=indiv_islive, totaldistance=indiv_totaldistance, effectivedistance=indiv_effectivedistance, experiment_info=Form1.experiment_info, actualrun=nruns, actual_step=actual_step, actual_movementcost=indiv_movementcost, timestep_waslive=indiv_islive_timestep_waslive,number_of_meetings=indiv_number_of_meetings,LOCI_start=indiv_LOCI_START,LOCI_end=indiv_LOCI)
 
@@ -1213,7 +1207,7 @@ class Form1(wx.Panel):
                     im = Image.new('P', (len(Form1.landscape_matrix),len(Form1.landscape_matrix)))  # 'P' for palettized
                     data = sum(Form1.landscape_matrix, [])  # flatten data
                     im.putdata(data)
-                    pal = color_pallete.color_pallete()
+                    pal = color_pallete()
                     im.putpalette(pal)
                     im.save(Form1.background_filename[0])
                         
