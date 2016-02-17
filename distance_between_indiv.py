@@ -1,4 +1,4 @@
-import time
+import math
 
 def distance_between_indiv(xy_ind_a,xy_ind_b,spatialresolution):
     """
