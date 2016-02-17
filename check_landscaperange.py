@@ -1,4 +1,4 @@
-   
+
 def check_landscaperange(list_of_xy):
     list_of_xy_modified=[]
     for i in range(len(list_of_xy)):

@@ -97,11 +97,8 @@ def select_landscape_grassnames():
     landscape_grassname_frag_AREAqual=landscape_grassname_frag_AREApix.replace("AREApix","AREAqual")
 
     
-    
-    ### STILLLL CHECK... Need I load COMPLETE maps?!
-    ### STILLLL CHECK... Need I load COMPLETE maps?!
-    ### STILLLL CHECK... Need I load COMPLETE maps?!
-    ### STILLLL CHECK... Need I load COMPLETE maps?!
+  
+    ### STILLLL CHECK... Need I load COMPLETE maps?! yes !!!!
     #---------------------- DILA01
     ##simulation_000001_p029_h059_HABMAT_grassclump_dila01_clean_PID
     file_dila01clean_pid=open("simulados_HABMAT_grassclump_dila01_clean_PID.txt","r")

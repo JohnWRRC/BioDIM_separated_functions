@@ -46,7 +46,7 @@ from identify_patchid import identify_patchid
 #---------------------------------------------------
 from select_landscape_grassnames import select_landscape_grassnames
 #----------------------------------------------------------------------
-from  export_raster_from_grass import export_raster_from_grass
+from  export_raster_from_grass import *
 #----------------------------------------------------------------------
 from color_pallete import color_pallete
 #----------------------------------------------------------------------
@@ -344,38 +344,72 @@ def estimate_start_popsize(landscape_grassname_habmat):
 import estimate_distedgePix
 #-------------------------------------------------ateaqui
 #-------------------------------------------------ateaqui
+
 #---------------------------------------------------
+
+
 def pickup_one_landscape():
     '''This part select one random landscape when
        from the Spatial Data Base
     '''
-    landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_hqmqlq_quality, landscape_grassname_hqmqlq_AREAqual, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual=select_landscape_grassnames()
     
-    export_raster_from_grass(landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist,landscape_grassname_habmat_pid,landscape_grassname_habmat_areapix,landscape_grassname_hqmqlq_quality,landscape_grassname_hqmqlq_AREAqual,landscape_grassname_frag_pid,landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual)
+    if Form1.UserBaseMap:
+        landscape_grassname_habmat, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix, landscape_grassname_dila01clean_pid, landscape_grassname_dila01clean_AREApix, landscape_grassname_dila02clean_pid, landscape_grassname_dila02clean_AREApix=select_landscape_grassnames_userbase()
+        
+        export_raster_from_grass_userbase(landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist,landscape_grassname_habmat_pid,landscape_grassname_habmat_areapix,landscape_grassname_hqmqlq_quality,landscape_grassname_hqmqlq_AREAqual,landscape_grassname_frag_pid,landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual)
+        
+        #landscape_head, landscape_matrix=read_landscape_head_ascii_standard('random_landscape_hqmqlq.asc',"int")
+        landscape_head, landscape_habdist=read_landscape_head_ascii_standard('random_landscape_habdist.asc',"float")
+        landscape_head, landscape_habmat_pid=read_landscape_head_ascii_standard('random_landscape_habmat_pid.asc',"long")
+        landscape_head, landscape_habmat_areapix=read_landscape_head_ascii_standard('random_landscape_habmat_areapix.asc',"long")        
+        #landscape_head, landscape_hqmqlq_quality=read_landscape_head_ascii_standard('random_landscape_hqmqlq_quality.asc',"int")        
+        #landscape_head, landscape_hqmqlq_AREAqual=read_landscape_head_ascii_standard('random_landscape_hqmqlq_AREAqual.asc',"long")
+        
+        #------------------------
+        landscape_head, landscape_frag_pid=read_landscape_head_ascii_standard('random_landscape_frag_pid.asc',"int")        
+        landscape_head, landscape_frag_AREApix=read_landscape_head_ascii_standard('random_landscape_frag_AREApix.asc',"long")
+        #landscape_head, landscape_frag_AREAqual=read_landscape_head_ascii_standard('random_landscape_frag_AREAqual.asc',"long")
     
-    landscape_head, landscape_matrix=read_landscape_head_ascii_standard('random_landscape_hqmqlq.asc',"int")
-    landscape_head, landscape_habdist=read_landscape_head_ascii_standard('random_landscape_habdist.asc',"float")
-    landscape_head, landscape_habmat_pid=read_landscape_head_ascii_standard('random_landscape_habmat_pid.asc',"long")
-    landscape_head, landscape_habmat_areapix=read_landscape_head_ascii_standard('random_landscape_habmat_areapix.asc',"long")        
-    landscape_head, landscape_hqmqlq_quality=read_landscape_head_ascii_standard('random_landscape_hqmqlq_quality.asc',"int")        
-    landscape_head, landscape_hqmqlq_AREAqual=read_landscape_head_ascii_standard('random_landscape_hqmqlq_AREAqual.asc',"long")
+        #------------------------
+        landscape_head, landscape_dila01clean_pid=read_landscape_head_ascii_standard('random_landscape_dila01clean_pid.asc',"int")        
+        landscape_head, landscape_dila01clean_AREApix=read_landscape_head_ascii_standard('random_landscape_dila01clean_AREApix.asc',"long")
+        #landscape_head, landscape_dila01clean_AREAqual=read_landscape_head_ascii_standard('random_landscape_dila01clean_AREAqual.asc',"long")
     
-    #------------------------
-    landscape_head, landscape_frag_pid=read_landscape_head_ascii_standard('random_landscape_frag_pid.asc',"int")        
-    landscape_head, landscape_frag_AREApix=read_landscape_head_ascii_standard('random_landscape_frag_AREApix.asc',"long")
-    landscape_head, landscape_frag_AREAqual=read_landscape_head_ascii_standard('random_landscape_frag_AREAqual.asc',"long")
-
-    #------------------------
-    landscape_head, landscape_dila01clean_pid=read_landscape_head_ascii_standard('random_landscape_dila01clean_pid.asc',"int")        
-    landscape_head, landscape_dila01clean_AREApix=read_landscape_head_ascii_standard('random_landscape_dila01clean_AREApix.asc',"long")
-    landscape_head, landscape_dila01clean_AREAqual=read_landscape_head_ascii_standard('random_landscape_dila01clean_AREAqual.asc',"long")
-
-    #------------------------
-    landscape_head, landscape_dila02clean_pid=read_landscape_head_ascii_standard('random_landscape_dila02clean_pid.asc',"int")        
-    landscape_head, landscape_dila02clean_AREApix=read_landscape_head_ascii_standard('random_landscape_dila02clean_AREApix.asc',"long")
-    landscape_head, landscape_dila02clean_AREAqual=read_landscape_head_ascii_standard('random_landscape_dila02clean_AREAqual.asc',"long")
+        #------------------------
+        landscape_head, landscape_dila02clean_pid=read_landscape_head_ascii_standard('random_landscape_dila02clean_pid.asc',"int")        
+        landscape_head, landscape_dila02clean_AREApix=read_landscape_head_ascii_standard('random_landscape_dila02clean_AREApix.asc',"long")
+        #landscape_head, landscape_dila02clean_AREAqual=read_landscape_head_ascii_standard('random_landscape_dila02clean_AREAqual.asc',"long")  
+        
+        return landscape_head, landscape_matrix, landscape_grassname_habmat, landscape_habdist, landscape_habmat_pid, landscape_habmat_areapix,  landscape_frag_pid, landscape_frag_AREApix, landscape_dila01clean_pid, landscape_dila01clean_AREApix, landscape_dila02clean_pid, landscape_dila02clean_AREApix
+    else:
+        landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_hqmqlq_quality, landscape_grassname_hqmqlq_AREAqual, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual=select_landscape_grassnames()
+        
+        export_raster_from_grass(landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist,landscape_grassname_habmat_pid,landscape_grassname_habmat_areapix,landscape_grassname_hqmqlq_quality,landscape_grassname_hqmqlq_AREAqual,landscape_grassname_frag_pid,landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual)
     
-    return landscape_head, landscape_matrix, landscape_grassname_habmat, landscape_habdist, landscape_habmat_pid, landscape_habmat_areapix, landscape_hqmqlq_quality, landscape_hqmqlq_AREAqual, landscape_frag_pid, landscape_frag_AREApix,landscape_frag_AREAqual, landscape_dila01clean_pid, landscape_dila01clean_AREApix,landscape_dila01clean_AREAqual, landscape_dila02clean_pid, landscape_dila02clean_AREApix,landscape_dila02clean_AREAqual
+        landscape_head, landscape_matrix=read_landscape_head_ascii_standard('random_landscape_hqmqlq.asc',"int")
+        landscape_head, landscape_habdist=read_landscape_head_ascii_standard('random_landscape_habdist.asc',"float")
+        landscape_head, landscape_habmat_pid=read_landscape_head_ascii_standard('random_landscape_habmat_pid.asc',"long")
+        landscape_head, landscape_habmat_areapix=read_landscape_head_ascii_standard('random_landscape_habmat_areapix.asc',"long")        
+        landscape_head, landscape_hqmqlq_quality=read_landscape_head_ascii_standard('random_landscape_hqmqlq_quality.asc',"int")        
+        landscape_head, landscape_hqmqlq_AREAqual=read_landscape_head_ascii_standard('random_landscape_hqmqlq_AREAqual.asc',"long")
+        
+        #------------------------
+        landscape_head, landscape_frag_pid=read_landscape_head_ascii_standard('random_landscape_frag_pid.asc',"int")        
+        landscape_head, landscape_frag_AREApix=read_landscape_head_ascii_standard('random_landscape_frag_AREApix.asc',"long")
+        landscape_head, landscape_frag_AREAqual=read_landscape_head_ascii_standard('random_landscape_frag_AREAqual.asc',"long")
+    
+        #------------------------
+        landscape_head, landscape_dila01clean_pid=read_landscape_head_ascii_standard('random_landscape_dila01clean_pid.asc',"int")        
+        landscape_head, landscape_dila01clean_AREApix=read_landscape_head_ascii_standard('random_landscape_dila01clean_AREApix.asc',"long")
+        landscape_head, landscape_dila01clean_AREAqual=read_landscape_head_ascii_standard('random_landscape_dila01clean_AREAqual.asc',"long")
+    
+        #------------------------
+        landscape_head, landscape_dila02clean_pid=read_landscape_head_ascii_standard('random_landscape_dila02clean_pid.asc',"int")        
+        landscape_head, landscape_dila02clean_AREApix=read_landscape_head_ascii_standard('random_landscape_dila02clean_AREApix.asc',"long")
+        landscape_head, landscape_dila02clean_AREAqual=read_landscape_head_ascii_standard('random_landscape_dila02clean_AREAqual.asc',"long")
+        return landscape_head, landscape_matrix, landscape_grassname_habmat, landscape_habdist, landscape_habmat_pid, landscape_habmat_areapix, landscape_hqmqlq_quality, landscape_hqmqlq_AREAqual, landscape_frag_pid, landscape_frag_AREApix,landscape_frag_AREAqual, landscape_dila01clean_pid, landscape_dila01clean_AREApix,landscape_dila01clean_AREAqual, landscape_dila02clean_pid, landscape_dila02clean_AREApix,landscape_dila02clean_AREAqual
+    
+    
     
 
 
@@ -644,6 +678,11 @@ def plot_walk(landscape_matrix, indiv_xy, aux_isdispersing, aux_islive, nruns, a
 class Form1(wx.Panel):
     def __init__(self, parent, id):
         wx.Panel.__init__(self, parent, id)
+        
+        #------------------------------------------------
+        Form1.UserBaseMap=1
+        #------------------------------------------------
+        
         
         Form1.include_habitatquality="HabitatQuality_NO"
         Form1.plotmovements=0
