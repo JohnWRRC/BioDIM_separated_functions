@@ -1,14 +1,8 @@
-import grass.script as grass
-from PIL import Image
-import wx
-import random
-import re
-import time
-import math
-#from rpy2 import robjects
-from datetime import tzinfo, timedelta, datetime
 
 def check_overpopulation_onpatch(indiv_isdispersing, indiv_whichpatchid, indiv_habareapix, indiv_age,spatialresolution,homerangesize):
+    """
+    Describe!
+    """    
     isdispersing_aux=[]
     
     for i in range(len(indiv_isdispersing)):

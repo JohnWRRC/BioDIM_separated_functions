@@ -1,14 +1,3 @@
-#!/c/Python25 python
-#import sys, os, numpy #sys, os, PIL, numpy, Image, ImageEnhance
-import grass.script as grass
-from PIL import Image
-import wx
-import random
-import re
-import time
-import math
-#from rpy2 import robjects
-from datetime import tzinfo, timedelta, datetime
 
 def read_landscape_head_ascii_grass(input_land):
     input_file = open(input_land, 'r')

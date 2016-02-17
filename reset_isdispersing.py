@@ -1,12 +1,3 @@
-import grass.script as grass
-from PIL import Image
-import wx
-import random
-import re
-import time
-import math
-#from rpy2 import robjects
-from datetime import tzinfo, timedelta, datetime
 
 def reset_isdispersing(indiv_isdispersing, indiv_whichpatchid, indiv_habareapix, indiv_islive, indiv_isdispersingRESET,spatialresolution,homerangesize):
     isdispersing_aux=[]

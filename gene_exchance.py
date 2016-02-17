@@ -1,4 +1,5 @@
 import random
+
 def gene_exchance(indiv_LOCI_indA,indiv_LOCI_indB,LOCI_gene_exchange_rate):
     aux_IndA = []
     aux_IndB = []

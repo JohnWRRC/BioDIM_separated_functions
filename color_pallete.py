@@ -1,14 +1,9 @@
-import grass.script as grass
-from PIL import Image
-import wx
 import random
-import re
-import time
-import math
-#from rpy2 import robjects
-from datetime import tzinfo, timedelta, datetime
 
 def color_pallete():
+    """
+    COMPLETE!
+    """    
     pal = [(0,0,0) for i in range(256)]  # all black
     
     random.seed(1)

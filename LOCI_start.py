@@ -1,12 +1,4 @@
-import grass.script as grass
-from PIL import Image
-import wx
 import random
-import re
-import time
-import math
-#from rpy2 import robjects
-from datetime import tzinfo, timedelta, datetime
 
 def LOCI_start(aux_loci_struc):
     number_of_loci=len(aux_loci_struc)
