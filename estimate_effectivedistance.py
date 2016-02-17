@@ -1,7 +1,18 @@
 import math
 
-
 def estimate_effectivedistance(input_xy_initpos, input_xy, input_xy_quadrant,landscape_matrix):
+    """
+    what is the quadrant information? # adjfact accounts for edge effects?
+    
+    This function calculates the distance between the initial (at the beginning of the simulation)
+    and current/final position of the individuals, for each individual (the effective distance)
+    Input:
+     input_xy_initpos: list of individual initial positions (x, y) [at the beginning of the simulation]
+     input_xy: list of individual current/final positions (x, y) [after some time of simulation]
+     input_xy_quadrant: ??
+    Output:
+     effect_dist: list of distances between initial and current locations, for each individual
+    """    
     effect_dist=[]
     
     for indiv in range(len(input_xy_initpos)):

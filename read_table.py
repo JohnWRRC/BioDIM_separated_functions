@@ -1,11 +1,3 @@
-import grass.script as grass
-from PIL import Image
-import wx
-import random
-import re
-import time
-import math
-#from rpy2 import robjects
 
 def read_table(file_in):
     input_file = open(file_in, 'r')

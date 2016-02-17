@@ -1,12 +1,4 @@
-import grass.script as grass
-from PIL import Image
-import wx
 import random
-import re
-import time
-import math
-#from rpy2 import robjects
-from datetime import tzinfo, timedelta, datetime
 
 def disperse_random_walk(landscape_matrix, indiv_xy, movement_dist_sigma_pixel, indiv_totaldistance):
     '''on landscape_matrix 1=HQ / 2=MQ / 3=LQ'''
