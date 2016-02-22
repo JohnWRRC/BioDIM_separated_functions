@@ -7,6 +7,7 @@ import random
 import re
 import time
 import math
+import os
 #from rpy2 import robjects
 from datetime import tzinfo, timedelta, datetime
 
@@ -63,13 +64,15 @@ def populate(forest, nPop):
 #----------------------------------------------------------------------
 from choose_dispersaldirection import choose_dispersaldirection
 
+from check_landscaperange import check_landscaperange
+
 #----------------------------------------------------------------------
 
 def estimate_movement_cost(actualcost,distfromedgePix, aux_xy):
     protecdness=get_safetyness_mortality(tab_in=Form1.tab_safetyness, distPix=distfromedgePix)
     
     aux=[aux_xy]
-    aux, changed_quadrante=check_landscaperange(aux)
+    aux, changed_quadrante=check_landscaperange(aux,Form1.landscape_matrix)
     YY=aux[0][0]
     XX=aux[0][1]        
     row=int(YY)
@@ -425,36 +428,36 @@ def get_listofposition(modified_indiv_xy_startpos):
         deltaY=random.uniform(-Form1.movement_dist_sigma_pixel,Form1.movement_dist_sigma_pixel)
         listofpositions.append([modified_indiv_xy_startpos[0]+deltaX,modified_indiv_xy_startpos[1]+deltaY])
 
-    listofpositions,changed_quadrante_psicologic=check_landscaperange(listofpositions)
+    listofpositions,changed_quadrante_psicologic=check_landscaperange(listofpositions,Form1.landscape_matrix)
     return listofpositions
 
 #----------------------------------------------------------------------
-def check_landscaperange(list_of_xy):
-    list_of_xy_modified=[]
-    for i in range(len(list_of_xy)):
-        list_of_xy_modified.append(list_of_xy[i])
+#def check_landscaperange(list_of_xy):
+    #list_of_xy_modified=[]
+    #for i in range(len(list_of_xy)):
+        #list_of_xy_modified.append(list_of_xy[i])
     
-    changed_quadrant=[]
-    for indiv in range(len(list_of_xy)):
-        #let row be ok
-        ns=0
-        ew=0
+    #changed_quadrant=[]
+    #for indiv in range(len(list_of_xy)):
+        ##let row be ok
+        #ns=0
+        #ew=0
         
-        if list_of_xy_modified[indiv][0]<0:
-            list_of_xy_modified[indiv][0]=list_of_xy_modified[indiv][0]+len(Form1.landscape_matrix)
-            ns=+1 #gone to North
-        if list_of_xy_modified[indiv][0]>len(Form1.landscape_matrix):
-            list_of_xy_modified[indiv][0]=list_of_xy_modified[indiv][0]-len(Form1.landscape_matrix)
-            ns=-1 #gone to South
-        #let col be ok    
-        if list_of_xy_modified[indiv][1]<0:
-            list_of_xy_modified[indiv][1]=list_of_xy_modified[indiv][1]+len(Form1.landscape_matrix)
-            ew=-1 #gone to West
-        if list_of_xy_modified[indiv][1]>len(Form1.landscape_matrix):
-            list_of_xy_modified[indiv][1]=list_of_xy_modified[indiv][1]-len(Form1.landscape_matrix)
-            ew=+1 #gone to Eest
-        changed_quadrant.append([ns,ew])
-    return list_of_xy_modified, changed_quadrant
+        #if list_of_xy_modified[indiv][0]<0:
+            #list_of_xy_modified[indiv][0]=list_of_xy_modified[indiv][0]+len(Form1.landscape_matrix)
+            #ns=+1 #gone to North
+        #if list_of_xy_modified[indiv][0]>len(Form1.landscape_matrix):
+            #list_of_xy_modified[indiv][0]=list_of_xy_modified[indiv][0]-len(Form1.landscape_matrix)
+            #ns=-1 #gone to South
+        ##let col be ok    
+        #if list_of_xy_modified[indiv][1]<0:
+            #list_of_xy_modified[indiv][1]=list_of_xy_modified[indiv][1]+len(Form1.landscape_matrix)
+            #ew=-1 #gone to West
+        #if list_of_xy_modified[indiv][1]>len(Form1.landscape_matrix):
+            #list_of_xy_modified[indiv][1]=list_of_xy_modified[indiv][1]-len(Form1.landscape_matrix)
+            #ew=+1 #gone to Eest
+        #changed_quadrant.append([ns,ew])
+    #return list_of_xy_modified, changed_quadrant
 
 
 #----------------------------------------------------------------------
@@ -468,7 +471,7 @@ def OnHabitat(listposition):
     OnHabitatEdgedistPixList=[] #DIST from edge
     
     for position in range(len(aux)):
-        aux, changed_quadrante=check_landscaperange(aux)
+        aux, changed_quadrante=check_landscaperange(aux,Form1.landscape_matrix)
         YY=aux[position][0]
         XX=aux[position][1]        
         row=int(YY)
@@ -577,7 +580,7 @@ def disperse_habitat_dependent(indiv_xy, indiv_isdispersing,indiv_totaldistance,
             
         
         x2y2=[[modified_indiv_xy[indiv][0],modified_indiv_xy[indiv][1]]]
-        x2y2,changed_quadrant_psico=check_landscaperange(x2y2)
+        x2y2,changed_quadrant_psico=check_landscaperange(x2y2,Form1.landscape_matrix)
         x2=x2y2[0][0]
         y2=x2y2[0][1]
         if changed_quadrant_psico[0][0]==1:
@@ -595,7 +598,7 @@ def disperse_habitat_dependent(indiv_xy, indiv_isdispersing,indiv_totaldistance,
             dist=0
         indiv_totaldistance[indiv]+=dist
         
-    modified_indiv_xy, changed_quadrant=check_landscaperange(modified_indiv_xy)
+    modified_indiv_xy, changed_quadrant=check_landscaperange(modified_indiv_xy,Form1.landscape_matrix)
     return modified_indiv_xy, indiv_totaldistance, changed_quadrant
 
 #---------------------------------------
@@ -680,7 +683,7 @@ class Form1(wx.Panel):
         wx.Panel.__init__(self, parent, id)
         
         #------------------------------------------------
-        Form1.UserBaseMap=1
+        Form1.UserBaseMap=0
         
         Form1.tempDir='../temp'
         Form1.inputDir='../input'
@@ -1108,7 +1111,7 @@ class Form1(wx.Panel):
     
                         #------------------ check which dispersal model was choose
                         if Form1.species_profile=='Random walk':
-                            indiv_xy, indiv_totaldistance, changed_quadrant=disperse_random_walk(Form1.landscape_matrix, indiv_xy,Form1.movement_dist_sigma_pixel, indiv_totaldistance)
+                            indiv_xy, indiv_totaldistance, changed_quadrant=disperse_random_walk(Form1.landscape_matrix, indiv_xy,Form1.movement_dist_sigma_pixel, indiv_totaldistance, Form1.landscape_matrix)
                         elif Form1.species_profile=='Habitat dependent':
                             indiv_xy, indiv_totaldistance, changed_quadrant=disperse_habitat_dependent(indiv_xy, indiv_isdispersing, indiv_totaldistance,indiv_dispdirectionX,indiv_dispdirectionY)
                         elif Form1.species_profile=='Frag. dependent' or Form1.species_profile=='Core dependent':
@@ -1197,6 +1200,7 @@ class Form1(wx.Panel):
                         #print "Num.islive=",str(sum(indiv_islive))
                         if Form1.output_store_ongoingsteps_landscape==1 or Form1.output_store_ongoingsteps_indiv==1:
                             indiv_effectivedistance=estimate_effectivedistance(indiv_xy_initpos, indiv_xy,indiv_xy_quadrant,landscape_matrix=Form1.landscape_matrix)
+                            os.chdir(Form1.outputDir) #mudando caminho para a pasta de saida
                             organize_output(moment="ongoingstep",grassname_habmat=Form1.landscape_grassname_habmat, isdispersing=indiv_isdispersing,isfemale=indiv_isfemale, islive=indiv_islive, totaldistance=indiv_totaldistance, effectivedistance=indiv_effectivedistance, experiment_info=Form1.experiment_info, actualrun=nruns, actual_step=actual_step, actual_movementcost=indiv_movementcost, timestep_waslive=indiv_islive_timestep_waslive,number_of_meetings=indiv_number_of_meetings,LOCI_start=indiv_LOCI_START,LOCI_end=indiv_LOCI)
 
                     #END for actual_step in range(0,Form1.timesteps):    
@@ -1206,7 +1210,7 @@ class Form1(wx.Panel):
                     #out of for
                     
                     indiv_effectivedistance=estimate_effectivedistance(indiv_xy_initpos, indiv_xy,indiv_xy_quadrant,landscape_matrix=Form1.landscape_matrix)
-                    
+                    os.chdir(Form1.outputDir) #mudando caminho para a pasta de saida
                     organize_output(moment="summary_of_a_run", grassname_habmat=Form1.landscape_grassname_habmat, isdispersing=indiv_isdispersing, isfemale=indiv_isfemale, islive=indiv_islive, totaldistance=indiv_totaldistance, effectivedistance=indiv_effectivedistance, experiment_info=Form1.experiment_info, actualrun=nruns, actual_step=actual_step, actual_movementcost=indiv_movementcost, timestep_waslive=indiv_islive_timestep_waslive,number_of_meetings=indiv_number_of_meetings,LOCI_start=indiv_LOCI_START,LOCI_end=indiv_LOCI)
 
                     StartingPopsizeTXT='\n\nStarting Pop'+str(Form1.start_popsize)
