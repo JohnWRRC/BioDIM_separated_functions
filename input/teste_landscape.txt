@@ -1,6 +1,0 @@
-experiment_info;actualrun;nruns;grassname_habmat;PLAND;CONFIG;HABQUAL;species_profile;include_quality;start_popsize;timesteps;homerangesize;movdistpix;dispfactor;isdispersing;isfemale;islive;totaldistance;effectivedistance;actual_movementcost;timestep_waslive;number_of_meetings
-2014-03-12 16:59:46.106000;1;5;simulation_000019_p036_h066_HABMAT;036;066;12.0;Highly generalist;HabitatQuality_NO;850;60;10;1.0;5.0;143;442;850;83021.26;15741.4;4282.09870332;51000;1397
-2014-03-12 16:59:46.106000;2;5;simulation_000016_p020_h047_HABMAT;020;047;12.0;Highly generalist;HabitatQuality_NO;472;60;10;1.0;5.0;2;237;472;22193.43;3944.87;3932.71166596;28320;389
-2014-03-12 16:59:46.106000;3;5;simulation_000005_p049_h092_HABMAT;049;092;12.0;Highly generalist;HabitatQuality_NO;1157;60;10;1.0;5.0;404;597;1157;172638.16;37712.45;4829.03898603;69420;3369
-2014-03-12 16:59:46.106000;4;5;simulation_000024_p019_h071_HABMAT;019;071;12.0;Highly generalist;HabitatQuality_NO;449;60;10;1.0;5.0;2;227;449;21515.9;3558.19;3805.61941873;26940;561
-2014-03-12 16:59:46.106000;5;5;simulation_000016_p020_h047_HABMAT;020;047;12.0;Highly generalist;HabitatQuality_NO;472;60;10;1.0;5.0;0;256;472;21784.12;3446.79;2420.06660503;28320;535

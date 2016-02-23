@@ -1,6 +1,7 @@
 import grass.script as grass
+import os
 
-def export_raster_from_grass(landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_hqmqlq_quality, landscape_grassname_hqmqlq_AREAqual, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual, landscape_grassname_dila01clean_pid, landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual, landscape_grassname_dila02clean_pid, landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual):
+def export_raster_from_grass(landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_hqmqlq_quality, landscape_grassname_hqmqlq_AREAqual, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual, landscape_grassname_dila01clean_pid, landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual, landscape_grassname_dila02clean_pid, landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual,defaultDir,inputDir,tempDir):
     '''This function read a set of filenames and export it from grass Mapsets 
     For this simulations, filename will be a list of _habmat, 
     _dist, _funcArea (several), _effectiveFuncArea
@@ -12,8 +13,13 @@ def export_raster_from_grass(landscape_grassname_habmat, landscape_grassname_hqm
     '''
     
     #mycommands=[]
-
+    
+    os.chdir(defaultDir)
+    os.chdir(inputDir)    
     grass.run_command("r.colors", map=landscape_grassname_habmat+'@MS_HABMAT', rules='_habmat_color.txt')
+    
+    os.chdir(defaultDir)
+    os.chdir(tempDir)    
     grass.run_command('r.out.ascii', input=landscape_grassname_habmat+'@MS_HABMAT', output='random_landscape_habmat.asc')
     grass.run_command('r.out.png', input=landscape_grassname_habmat+'@MS_HABMAT', output='random_landscape_habmat.png')
     

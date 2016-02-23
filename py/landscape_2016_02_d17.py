@@ -23,7 +23,6 @@ from distance_between_indiv import  distance_between_indiv
 from gene_exchance import gene_exchance
 #---------------------------------------------------
 
-from  gene_exchanceANTIGO import gene_exchanceANTIGO
 #---------------------------------------------------
 from  LOCI_start import LOCI_start
 #---------------------------------------------------
@@ -51,7 +50,7 @@ from  export_raster_from_grass import *
 #----------------------------------------------------------------------
 from color_pallete import color_pallete
 #----------------------------------------------------------------------
-from color_palleteantiga import color_palleteantiga
+
 #----------------------------------------------------------------------
 from disperse_random_walk import disperse_random_walk
 #----------------------------------------------------------------------
@@ -127,12 +126,6 @@ def get_safetyness_mortality(tab_in, distPix=0):
                     return tab_in[line-1][5]
     return 0
 
-class TZ(tzinfo):
-    import utcoffset
-#---------------------------------------------------
-class MyDate(object):
-    import __init__
-    import __repr__
 #---------------------------------------------------
 def kill_individual_new(distfromedgePix):
     
@@ -351,15 +344,18 @@ import estimate_distedgePix
 #---------------------------------------------------
 
 
-def pickup_one_landscape():
+def pickup_one_landscape(inputDir,tempDir):
     '''This part select one random landscape when
        from the Spatial Data Base
     '''
-    
-    if Form1.UserBaseMap:
+    # tenho uma duvida
+    # esses arquivos vao para o temp ou para o input?, sao aqueles ascs que ele exporta no inicio
+    if Form1.UserBaseMap: 
+        os.chdir(Form1.defaultDIR)
+        os.chdir(inputDir)
         landscape_grassname_habmat, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix, landscape_grassname_dila01clean_pid, landscape_grassname_dila01clean_AREApix, landscape_grassname_dila02clean_pid, landscape_grassname_dila02clean_AREApix=select_landscape_grassnames_userbase()
-        
-        export_raster_from_grass_userbase(landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist,landscape_grassname_habmat_pid,landscape_grassname_habmat_areapix,landscape_grassname_hqmqlq_quality,landscape_grassname_hqmqlq_AREAqual,landscape_grassname_frag_pid,landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual)
+                
+        export_raster_from_grass_userbase(landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist,landscape_grassname_habmat_pid,landscape_grassname_habmat_areapix,landscape_grassname_hqmqlq_quality,landscape_grassname_hqmqlq_AREAqual,landscape_grassname_frag_pid,landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual,Form1.defaultDIR,Form1.inputDir,Form1.tempDir)
         
         #landscape_head, landscape_matrix=read_landscape_head_ascii_standard('random_landscape_hqmqlq.asc',"int")
         landscape_head, landscape_habdist=read_landscape_head_ascii_standard('random_landscape_habdist.asc',"float")
@@ -385,9 +381,11 @@ def pickup_one_landscape():
         
         return landscape_head, landscape_matrix, landscape_grassname_habmat, landscape_habdist, landscape_habmat_pid, landscape_habmat_areapix,  landscape_frag_pid, landscape_frag_AREApix, landscape_dila01clean_pid, landscape_dila01clean_AREApix, landscape_dila02clean_pid, landscape_dila02clean_AREApix
     else:
+        os.chdir(Form1.defaultDIR)
+        os.chdir(inputDir)        
         landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_hqmqlq_quality, landscape_grassname_hqmqlq_AREAqual, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual=select_landscape_grassnames()
-        
-        export_raster_from_grass(landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist,landscape_grassname_habmat_pid,landscape_grassname_habmat_areapix,landscape_grassname_hqmqlq_quality,landscape_grassname_hqmqlq_AREAqual,landscape_grassname_frag_pid,landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual)
+     
+        export_raster_from_grass(landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist,landscape_grassname_habmat_pid,landscape_grassname_habmat_areapix,landscape_grassname_hqmqlq_quality,landscape_grassname_hqmqlq_AREAqual,landscape_grassname_frag_pid,landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual,Form1.defaultDIR,Form1.inputDir,Form1.tempDir)
     
         landscape_head, landscape_matrix=read_landscape_head_ascii_standard('random_landscape_hqmqlq.asc',"int")
         landscape_head, landscape_habdist=read_landscape_head_ascii_standard('random_landscape_habdist.asc',"float")
@@ -420,6 +418,7 @@ def pickup_one_landscape():
 
 
 #----------------------------------------------------------------------
+
 def get_listofposition(modified_indiv_xy_startpos):
     n_positions=20
     listofpositions=[]
@@ -685,17 +684,24 @@ class Form1(wx.Panel):
         #------------------------------------------------
         Form1.UserBaseMap=0
         
+        Form1.defaultDIR = os.getcwd()
         Form1.tempDir='../temp'
         Form1.inputDir='../input'
         Form1.outputDir='../output'
         Form1.pyDir='../py'
         Form1.auxDir='../auxfiles'
+        
         #------------------------------------------------
         
         
         Form1.include_habitatquality="HabitatQuality_NO"
         Form1.plotmovements=0
         Form1.include_probdeath=0
+        
+        
+        
+        os.chdir(Form1.defaultDIR)
+        os.chdir(Form1.inputDir)
         
         Form1.tab_safetyness=read_table("_models_safetyness.txt")
         Form1.tab_mortality =read_table("_models_mortality.txt")
@@ -712,6 +718,7 @@ class Form1(wx.Panel):
         Form1.start_popsize=5
         Form1.numberruns=100
         Form1.timesteps=200
+        #***********************************************
         Form1.background_filename=["random_landscape_hqmqlq.png","random_landscape_habmat.png","random_landscape_habdist.png","random_landscape_habmat_pid.png","random_landscape_habmat_areapix.png","random_landscape_hqmqlq_quality.png","random_landscape_hqmqlq_AREAqual.png","random_landscape_frag_pid.png","random_landscape_frag_AREApix.png","random_landscape_frag_AREAqual.png"]
         Form1.background_filename_start=Form1.background_filename
 
@@ -743,6 +750,7 @@ class Form1(wx.Panel):
         Form1.indiv_agestd  = 20
         Form1.indiv_female_rate = 0.5
         
+        #*************************************************
         Form1.spatialresolution=30 #resolution in meters
         Form1.output_prefix="_explandgen01_mca_t02"
         
@@ -753,8 +761,8 @@ class Form1(wx.Panel):
         self.quote.SetForegroundColour("blue")
         self.quote.SetFont(font)
 
-        #setar input
-        Form1.landscape_head, Form1.landscape_matrix, Form1.landscape_grassname_habmat, Form1.landscape_habdist,Form1.landscape_habmat_pid,Form1.landscape_habmat_areapix,Form1.landscape_hqmqlq_quality,Form1.landscape_hqmqlq_AREAqual,Form1.landscape_frag_pid,Form1.landscape_frag_AREApix,Form1.landscape_frag_AREAqual,Form1.landscape_dila01clean_pid,Form1.landscape_dila01clean_AREApix,Form1.landscape_dila01clean_AREAqual,Form1.landscape_dila02clean_pid,Form1.landscape_dila02clean_AREApix,Form1.landscape_dila02clean_AREAqual=pickup_one_landscape()
+        
+        Form1.landscape_head, Form1.landscape_matrix, Form1.landscape_grassname_habmat, Form1.landscape_habdist,Form1.landscape_habmat_pid,Form1.landscape_habmat_areapix,Form1.landscape_hqmqlq_quality,Form1.landscape_hqmqlq_AREAqual,Form1.landscape_frag_pid,Form1.landscape_frag_AREApix,Form1.landscape_frag_AREAqual,Form1.landscape_dila01clean_pid,Form1.landscape_dila01clean_AREApix,Form1.landscape_dila01clean_AREAqual,Form1.landscape_dila02clean_pid,Form1.landscape_dila02clean_AREApix,Form1.landscape_dila02clean_AREAqual=pickup_one_landscape(Form1.inputDir,Form1.tempDir)
         
                 
         Form1.start_popsize=estimate_start_popsize(Form1.landscape_grassname_habmat)
@@ -775,6 +783,8 @@ class Form1(wx.Panel):
         wx.EVT_BUTTON(self, 8, self.OnExit)
 
         ##------------ plot landscape image on wx.Panel
+        os.chdir(Form1.defaultDIR)
+        os.chdir(Form1.tempDir) #acho que vai aqui isso.. ele vai mudar as imagens que mostra no programa
         im = Image.new('P', (len(Form1.landscape_matrix),len(Form1.landscape_matrix)))  # 'P' for palettized
         data = sum(Form1.landscape_matrix, [])  # flatten data
         im.putdata(data)
@@ -789,6 +799,8 @@ class Form1(wx.Panel):
         
         ##------------ LElab_logo
         #setinput
+        os.chdir(Form1.defaultDIR)
+        os.chdir(Form1.auxDir) # os logos estao na pasta input
         imageFile = 'LeLab05.gif'
         im1 = Image.open(imageFile)
         jpg1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
@@ -889,6 +901,8 @@ class Form1(wx.Panel):
             
             self.logger.AppendText(" New background ==> %s\n" % Form1.background_filename[0] )
             
+            os.chdir(Form1.defaultDIR)
+            os.chdir(Form1.tempDir)
             imageFile=Form1.background_filename[0]
             im1 = Image.open(imageFile)
             jpg1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
@@ -898,8 +912,12 @@ class Form1(wx.Panel):
         if event.GetId()==11:   #11==CHANGE LANDSCAPE
             self.logger.AppendText(" Picking up new landscape ... please wait\n")
             
-            Form1.landscape_head, Form1.landscape_matrix,Form1.landscape_grassname_habmat,Form1.landscape_habdist,Form1.landscape_habmat_pid,Form1.landscape_habmat_areapix,Form1.landscape_hqmqlq_quality,Form1.landscape_hqmqlq_AREAqual,Form1.landscape_frag_pid,Form1.landscape_frag_AREApix,Form1.landscape_frag_AREAqual,Form1.landscape_dila01clean_pid,Form1.landscape_dila01clean_AREApix,Form1.landscape_dile01clean_AREAqual,Form1.landscape_dila02clean_pid,Form1.landscape_dila02clean_AREApix,Form1.landscape_dile02clean_AREAqual=pickup_one_landscape()
+            #pickupland scape
+            Form1.landscape_head, Form1.landscape_matrix,Form1.landscape_grassname_habmat,Form1.landscape_habdist,Form1.landscape_habmat_pid,Form1.landscape_habmat_areapix,Form1.landscape_hqmqlq_quality,Form1.landscape_hqmqlq_AREAqual,Form1.landscape_frag_pid,Form1.landscape_frag_AREApix,Form1.landscape_frag_AREAqual,Form1.landscape_dila01clean_pid,Form1.landscape_dila01clean_AREApix,Form1.landscape_dile01clean_AREAqual,Form1.landscape_dila02clean_pid,Form1.landscape_dila02clean_AREApix,Form1.landscape_dile02clean_AREAqual=pickup_one_landscape(Form1.inputDir,Form1.tempDir)
             
+            # background
+            os.chdir(Form1.defaultDIR)
+            os.chdir(Form1.tempDir) 
             imageFile=Form1.background_filename[0]
         
             im = Image.new('P', (len(Form1.landscape_matrix),len(Form1.landscape_matrix)))  # 'P' for palettized
@@ -910,10 +928,10 @@ class Form1(wx.Panel):
             im.save(Form1.background_filename[0])
                 
             imageFile=Form1.background_filename[0]
-            if Form1.plotmovements==1:
-                im1 = Image.open(imageFile)
-                jpg1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-                wx.StaticBitmap(self, -1, jpg1, (350,30), (jpg1.GetWidth(), jpg1.GetHeight()), style=wx.SIMPLE_BORDER)
+            #if Form1.plotmovements==1:
+            im1 = Image.open(imageFile)
+            jpg1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+            wx.StaticBitmap(self, -1, jpg1, (350,30), (jpg1.GetWidth(), jpg1.GetHeight()), style=wx.SIMPLE_BORDER)
             
             Form1.background_filename=Form1.background_filename_start
             
@@ -1183,6 +1201,10 @@ class Form1(wx.Panel):
                                     d.Destroy() # finally destroy it when finished.
                                     error=1
                         if Form1.plotmovements==1:
+                            
+                            #plot 
+                            os.chdir(Form1.defaultDIR)
+                            os.chdir(Form1.outputDir)
                             plot_walk(Form1.landscape_matrix, indiv_xy, aux_isdispersing=indiv_isdispersing, aux_islive=indiv_islive, nruns=nruns, aux_isdispersingRESET=indiv_isdispersingRESET, timestep=actual_step)
                         
                         indiv_isdispersing=check_overpopulation_onpatch(indiv_isdispersing, indiv_whichpatchid, indiv_habareapix, indiv_age,spatialresolution=Form1.spatialresolution,homerangesize=Form1.homerangesize)
@@ -1190,6 +1212,9 @@ class Form1(wx.Panel):
                         
                         if actual_step in actual_step_range:
                             if Form1.plotmovements==1:
+                                #
+                                os.chdir(Form1.defaultDIR)
+                                os.chdir(Form1.tempDir) # acho que essas chamadas terao que ser aqui mesmo
                                 imageFile=Form1.background_filename[0]
                                 im1 = Image.open(imageFile)
                                 jpg1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
@@ -1200,6 +1225,9 @@ class Form1(wx.Panel):
                         #print "Num.islive=",str(sum(indiv_islive))
                         if Form1.output_store_ongoingsteps_landscape==1 or Form1.output_store_ongoingsteps_indiv==1:
                             indiv_effectivedistance=estimate_effectivedistance(indiv_xy_initpos, indiv_xy,indiv_xy_quadrant,landscape_matrix=Form1.landscape_matrix)
+                            
+                            #salvando o txt de output
+                            os.chdir(Form1.defaultDIR)
                             os.chdir(Form1.outputDir) #mudando caminho para a pasta de saida
                             organize_output(moment="ongoingstep",grassname_habmat=Form1.landscape_grassname_habmat, isdispersing=indiv_isdispersing,isfemale=indiv_isfemale, islive=indiv_islive, totaldistance=indiv_totaldistance, effectivedistance=indiv_effectivedistance, experiment_info=Form1.experiment_info, actualrun=nruns, actual_step=actual_step, actual_movementcost=indiv_movementcost, timestep_waslive=indiv_islive_timestep_waslive,number_of_meetings=indiv_number_of_meetings,LOCI_start=indiv_LOCI_START,LOCI_end=indiv_LOCI)
 
@@ -1208,8 +1236,12 @@ class Form1(wx.Panel):
                     ##-----------------------------------
                     ##-----------------------------------
                     #out of for
+                    #
                     
                     indiv_effectivedistance=estimate_effectivedistance(indiv_xy_initpos, indiv_xy,indiv_xy_quadrant,landscape_matrix=Form1.landscape_matrix)
+                    
+                    # salvando txt de output
+                    os.chdir(Form1.defaultDIR)
                     os.chdir(Form1.outputDir) #mudando caminho para a pasta de saida
                     organize_output(moment="summary_of_a_run", grassname_habmat=Form1.landscape_grassname_habmat, isdispersing=indiv_isdispersing, isfemale=indiv_isfemale, islive=indiv_islive, totaldistance=indiv_totaldistance, effectivedistance=indiv_effectivedistance, experiment_info=Form1.experiment_info, actualrun=nruns, actual_step=actual_step, actual_movementcost=indiv_movementcost, timestep_waslive=indiv_islive_timestep_waslive,number_of_meetings=indiv_number_of_meetings,LOCI_start=indiv_LOCI_START,LOCI_end=indiv_LOCI)
 
@@ -1242,6 +1274,10 @@ class Form1(wx.Panel):
                     d.Destroy() # finally destroy it when finished.
                 else: #RUN new simulation
                     self.logger.AppendText(" Picking up new landscape ... please wait\n")
+                    
+                    # pickup_one_landscape
+                    os.chdir(Form1.defaultDIR)
+                    os.chdir(Form1.tempDir)
                     Form1.landscape_head, Form1.landscape_matrix,Form1.landscape_grassname_habmat,Form1.landscape_habdist,Form1.landscape_habmat_pid,Form1.landscape_habmat_areapix,Form1.landscape_hqmqlq_quality,Form1.landscape_hqmqlq_AREAqual,Form1.landscape_frag_pid,Form1.landscape_frag_AREApix,Form1.landscape_frag_AREAqual,Form1.landscape_dila01clean_pid,Form1.landscape_dila01clean_AREApix,Form1.landscape_dila01clean_AREAqual,Form1.landscape_dila02clean_pid,Form1.landscape_dila02clean_AREApix,Form1.landscape_dila02clean_AREAqual=pickup_one_landscape()
                     
                     if Form1.changehomerangesize==0: #not change

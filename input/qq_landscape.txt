@@ -1,2 +1,0 @@
-experiment_info;actualrun;nruns;grassname_habmat;PLAND;CONFIG;HABQUAL;species_profile;include_quality;start_popsize;timesteps;homerangesize;movdistpix;dispfactor;isdispersing;isfemale;islive;totaldistance;effectivedistance;actual_movementcost;timestep_waslive;number_of_meetings
-2014-03-11 16:20:30.026000;1;5;simulation_000024_p019_h071_HABMAT;019;071;12.0;Frag. dependent;HabitatQuality_NO;100;50;10;1.0;5.0;2;48;100;2736.2;302.73;10843.54438;5000;81

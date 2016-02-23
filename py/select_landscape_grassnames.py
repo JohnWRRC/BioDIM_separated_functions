@@ -5,8 +5,13 @@ import random
 import re
 import time
 import math
+import os
 #from rpy2 import robjects
 from datetime import tzinfo, timedelta, datetime
+
+
+
+
 
 def select_landscape_grassnames():
     '''This part read HABMAT file list and return the grassname
@@ -14,6 +19,8 @@ def select_landscape_grassnames():
        After also return other grassnames to use used on simulations
     '''
     #.... grab HABMAT grassname and landscape index
+    
+    
     file_habmat=open("simulados_HABMAT.txt","r")
     habmat=file_habmat.readlines()
     file_habmat.close()

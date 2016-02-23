@@ -1,5 +1,0 @@
-carregar BD GRASS
-
-cd "C:\Biodim2013\SGDB_simuladas_v05 - Copia\landpy_aux"
-
-python landscape_v0105b-temp.py
