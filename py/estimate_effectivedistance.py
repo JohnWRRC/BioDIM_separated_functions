@@ -1,6 +1,6 @@
 import math
 
-def estimate_effectivedistance(input_xy_initpos, input_xy, input_xy_quadrant,landscape_matrix):
+def estimate_effectivedistance(input_xy_initpos, input_xy, input_xy_quadrant, landscape_matrix):
     """
     what is the quadrant information? # adjfact accounts for edge effects?
     
