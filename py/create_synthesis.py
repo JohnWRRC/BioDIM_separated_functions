@@ -3,6 +3,9 @@ import numpy as np
 import math
 
 def create_synthesis(table_prefix):
+    '''
+    This function creates a sinthesis of the BioDIM runs results
+    '''
 
     tabela_resultado=np.genfromtxt(table_prefix,names=True, delimiter=';', dtype=None)
     saida=table_prefix+'_Synthesis.txt'
@@ -12,7 +15,6 @@ def create_synthesis(table_prefix):
     type_coluns_tables = tabela_resultado.dtype
     type_coluns_tables_fields=type_coluns_tables.fields
     type_coluns_tables_fields_ivert=[]
-    
     
     
     teste.write("#####################################################################################\n")
@@ -160,7 +162,6 @@ def create_synthesis(table_prefix):
                         x=x+1
             
             
-        
         if column=="include_quality":
             teste.write("\n\n--------------------------------------------------------------------------------------\n")
             teste.write("\nInclude Quality:\n")
@@ -230,7 +231,6 @@ def create_synthesis(table_prefix):
 	    i=indiv[-1]
 	    teste.write('  '+`i`)
 
-        
         
         if column=='Home Range Size':
 	    teste.write("\n\n--------------------------------------------------------------------------------------\n")
