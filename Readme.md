@@ -3,7 +3,7 @@
 This repository is being used to develop and share BioDIM code, data, and manuals.
 
 BioDIM is an individual-based model of animal movement in fragmented landscapes. 
-It was initially developed to simulation understory birds in the Brazilian Atlantic rainforest,
+It was initially developed to simulate understory birds in the Brazilian Atlantic rainforest,
 and now is being adapted to other taxa and other contexts.
 The software runs in a GRASS GIS environment.
 
