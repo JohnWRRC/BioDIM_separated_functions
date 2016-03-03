@@ -31,57 +31,65 @@ ID_ABOUT=101
 ID_IBMCFG=102
 ID_EXIT=110
 
-#---------------------------------------------------
-from create_synthesis import create_synthesis
-#---------------------------------------------------
-from distance_between_indiv import  distance_between_indiv 
-#---------------------------------------------------
 
+# Genetic modules
 #---------------------------------------------------
 from gene_exchance import gene_exchance
 #---------------------------------------------------
 from LOCI_start import LOCI_start
 #---------------------------------------------------
 
+# Auxiliary modules
 #---------------------------------------------------
 from read_table import read_table
 #---------------------------------------------------
-
+from distance_between_indiv import  distance_between_indiv 
 #---------------------------------------------------
-from estimate_effectivedistance import estimate_effectivedistance
- #---------------------------------------------------
+from estimate_distedgePix import estimate_distedgePix
+#---------------------------------------------------
+
+# Output models
+#---------------------------------------------------
+from create_synthesis import create_synthesis
+#---------------------------------------------------
+
+# Population modules
+#---------------------------------------------------
+from estimate_start_popsize import estimate_start_popsize
+#---------------------------------------------------
+from populate import populate
+#---------------------------------------------------
 from check_overpopulation_onpatch import check_overpopulation_onpatch
 #---------------------------------------------------
 from reset_isdispersing import reset_isdispersing
 #---------------------------------------------------
-from identify_habarea import identify_habarea
+from estimate_effectivedistance import estimate_effectivedistance
+#---------------------------------------------------
+
+# Movement modules
+#---------------------------------------------------
+from disperse_random_walk import disperse_random_walk
+#---------------------------------------------------
+from choose_dispersaldirection import choose_dispersaldirection
+#---------------------------------------------------
+
+# Landscape modules
+#---------------------------------------------------
+from select_landscape_grassnames import *
+#---------------------------------------------------
+from export_raster_from_grass import *
+#---------------------------------------------------
+from color_pallete import color_pallete
+#---------------------------------------------------
+from getForest import *
 #---------------------------------------------------
 from identify_patchid import identify_patchid
 #---------------------------------------------------
-
+from identify_habarea import identify_habarea
 #---------------------------------------------------
-from select_landscape_grassnames import *
-#----------------------------------------------------------------------
-from export_raster_from_grass import *
-#----------------------------------------------------------------------
-from color_pallete import color_pallete
-#----------------------------------------------------------------------
-
-#----------------------------------------------------------------------
-from disperse_random_walk import disperse_random_walk
-#----------------------------------------------------------------------
-
-#----------------------------------------------------------------------
-from getForest import *
-#----------------------------------------------------------------------
-from populate import populate
-
-#----------------------------------------------------------------------
-from choose_dispersaldirection import choose_dispersaldirection
-
 from check_landscaperange import check_landscaperange
+#---------------------------------------------------
 
-#----------------------------------------------------------------------
 
 def estimate_movement_cost(actualcost, distfromedgePix, aux_xy):
     protecdness = get_safetyness_mortality(tab_in=Form1.tab_safetyness, distPix=distfromedgePix)
@@ -351,16 +359,6 @@ def organize_output(moment, grassname_habmat, isdispersing, isfemale, islive, to
     create_synthesis(output_filename_indiv)
 
 
-def estimate_start_popsize(landscape_grassname_habmat, pland):
-    tmp_pland=pland
-    PixelAreaHA=Form1.spatialresolution*Form1.spatialresolution
-    LandscapePixels=len(Form1.landscape_matrix)*len(Form1.landscape_matrix[0])
-    tmp_starting_popsize=int(int(tmp_pland)*LandscapePixels*PixelAreaHA/100/10000/Form1.homerangesize)+1
-    return tmp_starting_popsize 
-#---------------------------------------------------
-from estimate_distedgePix import estimate_distedgePix
-#-------------------------------------------------ateaqui
-#-------------------------------------------------ateaqui
 
 #---------------------------------------------------
 
@@ -431,12 +429,6 @@ def pickup_one_landscape(inputDir,tempDir):
         landscape_head, landscape_dila02clean_AREAqual=read_landscape_head_ascii_standard('random_landscape_dila02clean_AREAqual.asc',"long")
         return landscape_head, landscape_matrix, landscape_grassname_habmat, landscape_habdist, landscape_habmat_pid, landscape_habmat_areapix, landscape_hqmqlq_quality, landscape_hqmqlq_AREAqual, landscape_frag_pid, landscape_frag_AREApix,landscape_frag_AREAqual, landscape_dila01clean_pid, landscape_dila01clean_AREApix,landscape_dila01clean_AREAqual, landscape_dila02clean_pid, landscape_dila02clean_AREApix,landscape_dila02clean_AREAqual
     
-    
-    
-
-
-
-
 
 #----------------------------------------------------------------------
 
@@ -632,6 +624,15 @@ def plot_walk(landscape_matrix, indiv_xy, aux_isdispersing, aux_islive, nruns, a
     #random.seed(123) #to force every individual have the same color
                      #on each movement
                      
+    # Checking if there is a dir moves
+    cur_dir = os.getcwd()
+    moves_dir = cur_dir+'/moves'
+    if not os.path.exists(moves_dir):
+        os.makedirs(moves_dir)
+    else:
+        # precisa limpar as imagens que tem la??
+        pass
+                     
     landscape_matrix_temp=[]
     for row in range(len(landscape_matrix)):
         landscape_matrix_temp.append(landscape_matrix[row])
@@ -672,7 +673,7 @@ def plot_walk(landscape_matrix, indiv_xy, aux_isdispersing, aux_islive, nruns, a
 
     im.putpalette(pal)
 
-    im.save(Form1.background_filename[0])
+    #im.save(Form1.background_filename[0])
     
     if nruns<9:
         myzeros="000"
@@ -684,7 +685,7 @@ def plot_walk(landscape_matrix, indiv_xy, aux_isdispersing, aux_islive, nruns, a
         myzeros=""
         
     saverun=Form1.output_prefix+"_run_"+myzeros+str(nruns+1)+".png"
-    im.save(saverun)
+    #im.save(saverun)
 
     if timestep<9:
         myzerosTS="000"
@@ -803,7 +804,7 @@ class Form1(wx.Panel):
         else:
             pland, forest=getForest(landscape_matrix = Form1.landscape_matrix)        
         
-        Form1.start_popsize=estimate_start_popsize(Form1.landscape_grassname_habmat, pland)
+        Form1.start_popsize=estimate_start_popsize(Form1.landscape_matrix, pland, Form1.homerangesize, Form1.spatialresolution)
         
         # ------------------------
         # Initializing GUI
@@ -1176,6 +1177,8 @@ class Form1(wx.Panel):
                         
                         if actual_step in actual_step_range:
                             self.logger.AppendText(" %s" % (actual_step+1))
+                            # so para acompanhar, podemos tirar; acho que deixa um pouco mais lento (mas nao muito)
+                            grass.run_command("g.message", message='Step: '+str(actual_step+1))
     
                         #------------------ check which dispersal model was choose
                         if Form1.species_profile=='Random walk':
@@ -1347,7 +1350,7 @@ class Form1(wx.Panel):
                     else:
                         pland, forest=getForest(landscape_matrix = Form1.landscape_matrix)        
                         
-                    Form1.start_popsize=estimate_start_popsize(Form1.landscape_grassname_habmat, pland)                    
+                    Form1.start_popsize=estimate_start_popsize(Form1.landscape_matrix, pland, Form1.homerangesize, Form1.spatialresolution)                    
                     
                     imageFile=Form1.background_filename[0]
                 
@@ -1424,7 +1427,7 @@ class Form1(wx.Panel):
             else:
                 pland, forest=getForest(landscape_matrix = Form1.landscape_matrix)        
                 
-            Form1.start_popsize=estimate_start_popsize(Form1.landscape_grassname_habmat, pland)                
+            Form1.start_popsize=estimate_start_popsize(Form1.landscape_matrix, pland, Form1.homerangesize, Form1.spatialresolution)                
 
             Form1.lblstart_popsize = wx.StaticText(self, -1, str(Form1.start_popsize)+"  ",wx.Point(84,123))
             self.logger.AppendText('New start popsize: %d\n' % Form1.start_popsize)

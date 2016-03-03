@@ -31,8 +31,8 @@ def color_pallete(userbase = False):
 #        pal[2] = (255,235,190)  # MQ/MATRIZ
 #        pal[3] = (255,190,190)  # MATRIZ
     if userbase:
-        pal[1] = (68,194,0)     # HABITAT
-        pal[0] = (255,190,190)  # MATRIZ
+        pal[1] = (60,170,0)     # HABITAT
+        pal[0] = (255,255,190)  # MATRIZ
     else:
         pal[1] = (68,194,0)     # HABITAT
         pal[2] = (255,235,190)  # MQ/MATRIZ
