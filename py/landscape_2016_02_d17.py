@@ -54,7 +54,7 @@ from check_overpopulation_onpatch import check_overpopulation_onpatch
 #---------------------------------------------------
 from reset_isdispersing import reset_isdispersing
 #---------------------------------------------------
-from identify_habareapix import identify_habareapix
+from identify_habarea import identify_habarea
 #---------------------------------------------------
 from identify_patchid import identify_patchid
 #---------------------------------------------------
@@ -74,8 +74,8 @@ from disperse_random_walk import disperse_random_walk
 #----------------------------------------------------------------------
 from getForest import *
 #----------------------------------------------------------------------
-def populate(forest, nPop):
-    return random.sample(forest, nPop)
+from populate import populate
+
 #----------------------------------------------------------------------
 from choose_dispersaldirection import choose_dispersaldirection
 
@@ -668,7 +668,7 @@ def plot_walk(landscape_matrix, indiv_xy, aux_isdispersing, aux_islive, nruns, a
     data = sum(landscape_matrix_temp, [])  # flatten data
     im.putdata(data)
 
-    pal = color_pallete()
+    pal = color_pallete(userbase = Form1.UserBaseMap)
 
     im.putpalette(pal)
 
@@ -706,9 +706,9 @@ class Form1(wx.Panel):
     def __init__(self, parent, id):
         wx.Panel.__init__(self, parent, id)
         
-        biodim_version = 'BioDIM v. 1.05b.1'
+        Form1.biodim_version = 'BioDIM v. 1.05b.1'
         #------------------------------------------------
-        Form1.UserBaseMap=0
+        Form1.UserBaseMap=False
         
         Form1.defaultDIR = os.getcwd()
         Form1.tempDir='../temp'
@@ -785,7 +785,7 @@ class Form1(wx.Panel):
         #-------------------------------------------------
         # Initializing GUI
         
-        self.quote = wx.StaticText(self, id=-1, label=biodim_version+" - landscape genetic embedded", pos=wx.Point(20, 30))
+        self.quote = wx.StaticText(self, id=-1, label=Form1.biodim_version+" - landscape genetic embedded", pos=wx.Point(20, 30))
         
         font = wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD)
         self.quote.SetForegroundColour("blue")
@@ -829,7 +829,7 @@ class Form1(wx.Panel):
         im = Image.new('P', (len(Form1.landscape_matrix),len(Form1.landscape_matrix[0])))  # 'P' for palettized
         data = sum(Form1.landscape_matrix, [])  # flatten data
         im.putdata(data)
-        pal = color_pallete()
+        pal = color_pallete(userbase = Form1.UserBaseMap)
         im.putpalette(pal)
         im.save(Form1.background_filename[0])
             
@@ -965,7 +965,7 @@ class Form1(wx.Panel):
             im = Image.new('P', (len(Form1.landscape_matrix),len(Form1.landscape_matrix[0])))  # 'P' for palettized
             data = sum(Form1.landscape_matrix, [])  # flatten data
             im.putdata(data)
-            pal = color_pallete()
+            pal = color_pallete(userbase = Form1.UserBaseMap)
             im.putpalette(pal)
             im.save(Form1.background_filename[0])
                 
@@ -1063,10 +1063,10 @@ class Form1(wx.Panel):
                     if Form1.species_profile=="Habitat dependent":
                         indiv_whichpatchid.append(identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_habmat_pid))
                         if Form1.include_habitatquality=="HabitatQuality_YES":
-                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_hqmqlq_AREAqual))
+                            indiv_habareapix.append(identify_habarea(indiv_xy_position, habarea_map=Form1.landscape_hqmqlq_AREAqual, userbase=Form1.UserBaseMap))
                             Form1.using = "landscape_hqmqlq_AREAqual"
                         else:
-                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_habmat_areapix))
+                            indiv_habareapix.append(identify_habarea(indiv_xy_position, habarea_map=Form1.landscape_habmat_areapix, userbase=Form1.UserBaseMap))
                             Form1.using = "landscape_habmat_areapix"
                             
                     elif Form1.species_profile=="Frag. dependent" or Form1.species_profile=="Core dependent":
@@ -1075,28 +1075,28 @@ class Form1(wx.Panel):
                         ############ NOW ARE OK - BUT IS GOOD TO CHECK IT OUT
                         indiv_whichpatchid.append(identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_frag_pid))
                         if Form1.include_habitatquality=="HabitatQuality_YES":
-                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_frag_AREAqual))
+                            indiv_habareapix.append(identify_habarea(indiv_xy_position, habarea_map=Form1.landscape_frag_AREAqual, userbase=Form1.UserBaseMap))
                             Form1.using = "landscape_frag_AREAqual"
                         else:
-                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_frag_AREApix))
+                            indiv_habareapix.append(identify_habarea(indiv_xy_position, habarea_map=Form1.landscape_frag_AREApix, userbase=Form1.UserBaseMap))
                             Form1.using = "landscape_frag_areapix"
                     
                     elif Form1.species_profile=="Moderately generalist":
                         indiv_whichpatchid.append(identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_dila01clean_pid))
                         if Form1.include_habitatquality=="HabitatQuality_YES":
-                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila01clean_AREAqual))
+                            indiv_habareapix.append(identify_habarea(indiv_xy_position, habarea_map=Form1.landscape_dila01clean_AREAqual, userbase=Form1.UserBaseMap))
                             Form1.using = "landscape_dila01clean_AREAqual"
                         else:
-                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila01clean_AREApix))
+                            indiv_habareapix.append(identify_habarea(indiv_xy_position, habarea_map=Form1.landscape_dila01clean_AREApix, userbase=Form1.UserBaseMap))
                             Form1.using = "Form1.landscape_dila01clean_AREApix"
                             
                     elif Form1.species_profile=="Highly generalist":
                         indiv_whichpatchid.append(identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_dila02clean_pid))
                         if Form1.include_habitatquality=="HabitatQuality_YES":
-                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila02clean_AREAqual))
+                            indiv_habareapix.append(identify_habarea(indiv_xy_position, habarea_map=Form1.landscape_dila02clean_AREAqual, userbase=Form1.UserBaseMap))
                             Form1.using = "landscape_dila02clean_AREAqual"
                         else:
-                            indiv_habareapix.append(identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila02clean_AREApix))
+                            indiv_habareapix.append(identify_habarea(indiv_xy_position, habarea_map=Form1.landscape_dila02clean_AREApix, userbase=Form1.UserBaseMap))
                             Form1.using = "Form1.landscape_dila02clean_AREApix"
                             
                     elif  Form1.species_profile=="Random walk": 
@@ -1108,7 +1108,7 @@ class Form1(wx.Panel):
                 if Form1.timesteps<=0:
                     self.logger.AppendText("\n  ...... ??? Time steps=  %s\n" % Form1.timesteps)
                     d= wx.MessageDialog( self, " Error on Time steps \n"
-                                " try again", biodim_version+" (Landscape genetic embeded)", wx.OK)
+                                " try again", Form1.biodim_version+" (Landscape genetic embeded)", wx.OK)
                     d.ShowModal() # Shows it
                     d.Destroy() # finally destroy it when finished.
                     error=1
@@ -1116,7 +1116,7 @@ class Form1(wx.Panel):
                 if Form1.homerangesize<=0:
                     self.logger.AppendText("\n  ...... ??? Home range size =  %s\n" % Form1.homerangesize)
                     d= wx.MessageDialog( self, " Error on Home range size \n"
-                                " try again", biodim_version+" (Landscape genetic embeded)", wx.OK)
+                                " try again", Form1.biodim_version+" (Landscape genetic embeded)", wx.OK)
                     d.ShowModal() # Shows it
                     d.Destroy() # finally destroy it when finished.
                     error=1
@@ -1124,7 +1124,7 @@ class Form1(wx.Panel):
                 if Form1.numberruns<=0:
                     self.logger.AppendText("\n  ...... ??? Number of runs =  %s\n" % Form1.numberruns)
                     d= wx.MessageDialog( self, " Error on Number of runs \n"
-                                " try again", biodim_version+" (Landscape genetic embeded)", wx.OK)
+                                " try again", Form1.biodim_version+" (Landscape genetic embeded)", wx.OK)
                     d.ShowModal() # Shows it
                     d.Destroy() # finally destroy it when finished.
                     error=1
@@ -1132,7 +1132,7 @@ class Form1(wx.Panel):
                 if Form1.start_popsize<=0:
                     self.logger.AppendText("\n  ...... ??? starting population= %s\n" % Form1.start_popsize)
                     d= wx.MessageDialog( self, " Error on Population size \n"
-                                " try again", biodim_version+" (Landscape genetic embeded)", wx.OK)
+                                " try again", Form1.biodim_version+" (Landscape genetic embeded)", wx.OK)
                     d.ShowModal() # Shows it
                     d.Destroy() # finally destroy it when finished.
                     error=1
@@ -1140,7 +1140,7 @@ class Form1(wx.Panel):
                 if Form1.movement_dist_sigma_pixel<=0:
                     self.logger.AppendText("\n  ...... ??? Mov.Dist.Pix= %0.1f\n" % Form1.movement_dist_sigma_pixel)
                     d= wx.MessageDialog( self, " Error Mov.Dist.Pix \n"
-                                " try again", biodim_version+" (Landscape genetic embeded)", wx.OK)
+                                " try again", Form1.biodim_version+" (Landscape genetic embeded)", wx.OK)
                     d.ShowModal() # Shows it
                     d.Destroy() # finally destroy it when finished.
                     error=1
@@ -1148,7 +1148,7 @@ class Form1(wx.Panel):
                 if Form1.when_dispersing_distance_factor<=0:
                     self.logger.AppendText("\n  ...... ??? On dispersing factor = %0.1f\n" % Form1.when_dispersing_distance_factor)
                     d= wx.MessageDialog( self, " Error on dispersing factor \n"
-                                " try again", biodim_version+" (Landscape genetic embeded)", wx.OK)
+                                " try again", Form1.biodim_version+" (Landscape genetic embeded)", wx.OK)
                     d.ShowModal() # Shows it
                     d.Destroy() # finally destroy it when finished.
                     error=1
@@ -1156,7 +1156,7 @@ class Form1(wx.Panel):
                 if Form1.indivpixels_whenmoving<=0:
                     self.logger.AppendText("\n  ...... ??? Indiv.Size (pix)= %s" % Form1.indivpixels_whenmoving)
                     d= wx.MessageDialog( self, " Error on Indiv.Pix.Size \n"
-                                " try again", biodim_version+" (Landscape genetic embeded)", wx.OK)
+                                " try again", Form1.biodim_version+" (Landscape genetic embeded)", wx.OK)
                     d.ShowModal() # Shows it
                     d.Destroy() # finally destroy it when finished.
                     error=1
@@ -1191,7 +1191,7 @@ class Form1(wx.Panel):
                         else:
                             self.logger.AppendText("\n  ...... ??? Dispesal model not defined")
                             d= wx.MessageDialog( self, " Species profile Error\n Model under development\n"
-                                        " Choose another species", biodim_version+" (Landscape genetic embeded)", wx.OK)
+                                        " Choose another species", Form1.biodim_version+" (Landscape genetic embeded)", wx.OK)
                             d.ShowModal() # Shows it
                             d.Destroy() # finally destroy it when finished.
                             error=1
@@ -1232,22 +1232,22 @@ class Form1(wx.Panel):
                                         
                                 if Form1.species_profile=="Habitat dependent":
                                     indiv_whichpatchid[num_of_indiv]=identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_habmat_pid)
-                                    indiv_habareapix[num_of_indiv]=identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_habmat_areapix)
+                                    indiv_habareapix[num_of_indiv]=identify_habarea(indiv_xy_position, habarea_map=Form1.landscape_habmat_areapix, userbase=Form1.UserBaseMap)
                                 elif Form1.species_profile=="Frag. dependent" or Form1.species_profile=="Core dependent":
                                     indiv_whichpatchid[num_of_indiv]=identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_frag_pid)
-                                    indiv_habareapix[num_of_indiv]=identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_frag_AREApix)
+                                    indiv_habareapix[num_of_indiv]=identify_habarea(indiv_xy_position, habarea_map=Form1.landscape_frag_AREApix, userbase=Form1.UserBaseMap)
                                 elif Form1.species_profile=="Moderately generalist":
                                     indiv_whichpatchid[num_of_indiv]=identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_dila01clean_pid)
-                                    indiv_habareapix[num_of_indiv]=identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila01clean_AREApix)
+                                    indiv_habareapix[num_of_indiv]=identify_habarea(indiv_xy_position, habarea_map=Form1.landscape_dila01clean_AREApix, userbase=Form1.UserBaseMap)
                                 elif Form1.species_profile=="Highly generalist":
                                     indiv_whichpatchid[num_of_indiv]=identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_dila02clean_pid)
-                                    indiv_habareapix[num_of_indiv]=identify_habareapix(indiv_xy_position, habareapix_map=Form1.landscape_dila02clean_AREApix)
+                                    indiv_habareapix[num_of_indiv]=identify_habarea(indiv_xy_position, habarea_map=Form1.landscape_dila02clean_AREApix, userbase=Form1.UserBaseMap)
                                 elif Form1.species_profile=="Random walk":
                                     pass
                                 else:
                                     self.logger.AppendText("\n  ...... ??? Dispesal model not defined")
                                     d= wx.MessageDialog( self, " Species profile Error\n Model under development\n"
-                                                " Choose another species", biodim_version+" (Landscape genetic embeded)", wx.OK)
+                                                " Choose another species", Form1.biodim_version+" (Landscape genetic embeded)", wx.OK)
                                     d.ShowModal() # Shows it
                                     d.Destroy() # finally destroy it when finished.
                                     error=1
@@ -1321,7 +1321,7 @@ class Form1(wx.Panel):
                 
                 if nruns==(Form1.numberruns-1):
                     d= wx.MessageDialog( self, " Thanks for simulating \n"
-                                    " Finished!", biodim_version+" (Landscape genetic embeded)", wx.OK)
+                                    " Finished!", Form1.biodim_version+" (Landscape genetic embeded)", wx.OK)
                     d.ShowModal() # Shows it
                     d.Destroy() # finally destroy it when finished.
                 else: #RUN new simulation
@@ -1354,7 +1354,7 @@ class Form1(wx.Panel):
                     im = Image.new('P', (len(Form1.landscape_matrix),len(Form1.landscape_matrix[0])))  # 'P' for palettized
                     data = sum(Form1.landscape_matrix, [])  # flatten data
                     im.putdata(data)
-                    pal = color_pallete()
+                    pal = color_pallete(userbase = Form1.UserBaseMap)
                     im.putpalette(pal)
                     im.save(Form1.background_filename[0])
                         
@@ -1493,7 +1493,7 @@ class Form1(wx.Panel):
             
     def OnExit(self, event):
         d= wx.MessageDialog( self, " Thanks for simulating \n "+
-                            biodim_version+" (Landscape genetic embeded)","Good bye", wx.OK)
+                            Form1.biodim_version+" (Landscape genetic embeded)","Good bye", wx.OK)
                             # Create a message dialog box
         d.ShowModal() # Shows it
         d.Destroy() # finally destroy it when finished.
@@ -1538,7 +1538,7 @@ import read_landscape_head_ascii_grass ##################### nao utilizada??
 #----------------------------------------------------------------------
 if __name__ == "__main__":
     app = wx.PySimpleApp()
-    frame = wx.Frame(None, -1, " "+biodim_version+" - Biologically scalled DIspersal Model - LANDSCAPE GENETIC EMBEDDED - UofT - LeLab - Feb2010", size=(900,600))
+    frame = wx.Frame(None, -1, "BioDIM v. 1.05b.1 - Biologically scalled DIspersal Model - LANDSCAPE GENETIC EMBEDDED - UofT - LeLab - Feb2010", size=(900,600))
     Form1(frame,-1)
     frame.Show(1)
     
