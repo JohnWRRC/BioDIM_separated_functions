@@ -43,6 +43,9 @@ from LOCI_start import LOCI_start
 #---------------------------------------------------
 from read_table import read_table
 #---------------------------------------------------
+# from head_split_up_line import head_split_up_line
+# this function is used in the read_landscape_head_ascii_standard module
+#---------------------------------------------------
 from distance_between_indiv import  distance_between_indiv 
 #---------------------------------------------------
 from estimate_distedgePix import estimate_distedgePix
@@ -78,6 +81,8 @@ from choose_dispersaldirection import choose_dispersaldirection
 from select_landscape_grassnames import *
 #---------------------------------------------------
 from export_raster_from_grass import *
+#---------------------------------------------------
+from read_landscape_head_ascii_standard import read_landscape_head_ascii_standard
 #---------------------------------------------------
 from color_pallete import color_pallete
 #---------------------------------------------------
@@ -1502,43 +1507,9 @@ class Form1(wx.Panel):
         d.Destroy() # finally destroy it when finished.
         frame.Close(True)  # Close the frame. 
 
-        
-#----------------------------------------------------------------------
-import head_split_up_line
-#----------------------------------------------------------------------
-def read_landscape_head_ascii_standard(input_land, matrixmode): ### essa funcao podemos exportar como modulo
-    input_file = open(input_land, 'r')
-    line = input_file.readline()
-    nlines = 0
-    head = {}
-    while nlines<5:
-        line=input_file.readline()
-        clean_line = head_split_up_line.head_split_up_line(line)
-        head.update(clean_line)
-        nlines += 1
-    input_file.close()
-    
-    input_file = open(input_land, 'r')
-    lines = input_file.readlines()
-    lines = lines[6:]
-    input_file.close()
 
-    matrix = []
-    if matrixmode=="int":
-        for line in lines:
-            matrix.append(map(int, line.strip().split(" ")))
-    if matrixmode=="float":
-        for line in lines:
-            matrix.append(map(float, line.strip().split(" ")))
-    if matrixmode=="long":
-        for line in lines:
-            matrix.append(map(long, line.strip().split(" ")))
-    return head, matrix
 #----------------------------------------------------------------------
-import read_landscape_head_ascii_grass ##################### nao utilizada??
-#----------------------------------------------------------------------
-#......................................................................
-#----------------------------------------------------------------------
+# Initializing the software
 if __name__ == "__main__":
     app = wx.PySimpleApp()
     frame = wx.Frame(None, -1, "BioDIM v. 1.05b.1 - Biologically scalled DIspersal Model - LANDSCAPE GENETIC EMBEDDED - UofT - LeLab - Feb2010", size=(900,600))
