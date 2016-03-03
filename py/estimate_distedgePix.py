@@ -1,4 +1,4 @@
-def estimate_distedgePix(indiv_xy_position,landscape_habdist):
+def estimate_distedgePix(indiv_xy_position, landscape_habdist):
     """
     COMPLETE!
     This function takes the information of distance (in pixels) from the current

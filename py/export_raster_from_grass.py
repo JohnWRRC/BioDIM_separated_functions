@@ -19,7 +19,7 @@ def export_raster_from_grass(landscape_grassname_habmat, landscape_grassname_hqm
     grass.run_command("r.colors", map=landscape_grassname_habmat+'@MS_HABMAT', rules='_habmat_color.txt')
     
     os.chdir(defaultDir)
-    os.chdir(tempDir)    
+    os.chdir(tempDir)
     grass.run_command('r.out.ascii', input=landscape_grassname_habmat+'@MS_HABMAT', output='random_landscape_habmat.asc')
     grass.run_command('r.out.png', input=landscape_grassname_habmat+'@MS_HABMAT', output='random_landscape_habmat.png')
     
@@ -97,6 +97,8 @@ def export_raster_from_grass_userbase(landscape_grassname_habmat, landscape_gras
     
     os.chdir(defaultDir)
     os.chdir(tempDir)  
+
+    grass.run_command('g.region', rast=landscape_grassname_habmat+'@userbase')
 
     grass.run_command('r.out.ascii', input=landscape_grassname_habmat+'@userbase', output='random_landscape_habmat.asc')
     grass.run_command('r.out.png', input=landscape_grassname_habmat+'@userbase', output='random_landscape_habmat.png')

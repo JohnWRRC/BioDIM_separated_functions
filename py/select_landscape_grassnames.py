@@ -152,18 +152,18 @@ def select_landscape_grassnames_userbase():
        After also return other grassnames to use used on simulations
     '''
     #.... grab HABMAT grassname and landscape index
-       
+    ## lndscp_0001_Mapa0001_tif_HABMAT   
     file_habmat=open("simulados_HABMAT.txt","r")
     habmat=file_habmat.readlines()
     file_habmat.close()
     landscape_grassname_habmat=random.sample(habmat, 1)[0].replace("\n","")
-    landscape_index=landscape_grassname_habmat[11:17]
+    landscape_index=landscape_grassname_habmat[0:11]
     
     #.... return grassname for HABDIST (Distance from EDGE of habitat)
     #.... and on this case, distance are in PIXELS, where positive
     #.... values represent distance on MATRIX direction, and
     #.... negative values are on CORE direction
-    ##simulation_000001_p029_h059_HABMAT_DIST
+    ## lndscp_0001_Mapa0001_tif_HABMAT_dist
     file_habdist=open("simulados_HABMAT_DIST.txt","r")
     habdist=file_habdist.readlines()
     file_habdist.close()
@@ -171,7 +171,7 @@ def select_landscape_grassnames_userbase():
         if re.search(landscape_index, i):
             landscape_grassname_habdist=i.replace("\n","")
 
-    ##simulation_000001_p029_h059_HABMAT_grassclump_PID
+    ## lndscp_0001_Mapa0001_tif_HABMAT_patch_clump_mata_limpa_pid
     file_habmat_pid=open("simulados_HABMAT_grassclump_PID.txt","r")
     habmat_pid=file_habmat_pid.readlines()
     file_habmat_pid.close()
@@ -179,7 +179,7 @@ def select_landscape_grassnames_userbase():
         if re.search(landscape_index, i):
             landscape_grassname_habmat_pid=i.replace("\n","")
 
-    ##simulation_000001_p029_h059_HABMAT_grassclump_AREApix
+    ## lndscp_0001_Mapa0001_tif_HABMAT_patch_clump_mata_limpa_AreaHA
     file_habmat_areapix=open("simulados_HABMAT_grassclump_AREApix.txt","r")
     habmat_areapix=file_habmat_areapix.readlines()
     file_habmat_areapix.close()
@@ -187,7 +187,7 @@ def select_landscape_grassnames_userbase():
         if re.search(landscape_index, i):
             landscape_grassname_habmat_areapix=i.replace("\n","")
 
-    ##simulation_000001_p029_h059_HABMAT_FRAG_PID
+    ## lndscp_0001_Mapa0001_tif_HABMAT_FRAG30m_mata_clump_pid
     file_frag_pid=open("simulados_HABMAT_FRAC_PID.txt","r")
     frag_pid=file_frag_pid.readlines()
     file_frag_pid.close()
@@ -195,7 +195,7 @@ def select_landscape_grassnames_userbase():
         if re.search(landscape_index, i):
             landscape_grassname_frag_pid=i.replace("\n","")
 
-    ##simulation_000001_p029_h059_HABMAT_FRAG_AREApix
+    ## lndscp_0001_Mapa0001_tif_HABMAT_FRAG30m_mata_clump_AreaHA
     file_frag_AREApix=open("simulados_HABMAT_FRAC_AREApix.txt","r")
     frag_AREApix=file_frag_AREApix.readlines()
     file_frag_AREApix.close()
@@ -205,7 +205,7 @@ def select_landscape_grassnames_userbase():
   
     ### STILLLL CHECK... Need I load COMPLETE maps?! yes !!!!
     #---------------------- DILA01
-    ##simulation_000001_p029_h059_HABMAT_grassclump_dila01_clean_PID
+    ## lndscp_0001_Mapa0001_tif_HABMAT_dila_30m_orig_clump_mata_limpa_pid
     file_dila01clean_pid=open("simulados_HABMAT_grassclump_dila01_clean_PID.txt","r")
     dila01clean_pid=file_dila01clean_pid.readlines()
     file_dila01clean_pid.close()
@@ -213,7 +213,7 @@ def select_landscape_grassnames_userbase():
         if re.search(landscape_index, i):
             landscape_grassname_dila01clean_pid=i.replace("\n","")
             
-    ##simulation_000001_p029_h059_HABMAT_grassclump_dila01_complete_AREApix
+    ## lndscp_0001_Mapa0001_tif_HABMAT_dila_30m_orig_clump_mata_limpa_AreaHA
     file_dila01clean_AREApix=open("simulados_HABMAT_grassclump_dila01_clean_AREApix.txt","r")
     dila01clean_AREApix=file_dila01clean_AREApix.readlines()
     file_dila01clean_AREApix.close()
@@ -222,7 +222,7 @@ def select_landscape_grassnames_userbase():
             landscape_grassname_dila01clean_AREApix=i.replace("\n","")   
 
     #---------------------- DILA02
-    ##simulation_000001_p029_h059_HABMAT_grassclump_dila02_clean_PID
+    ## lndscp_0001_Mapa0001_tif_HABMAT_dila_60m_orig_clump_mata_limpa_pid
     file_dila02clean_pid=open("simulados_HABMAT_grassclump_dila02_clean_PID.txt","r")
     dila02clean_pid=file_dila02clean_pid.readlines()
     file_dila02clean_pid.close()
@@ -230,7 +230,7 @@ def select_landscape_grassnames_userbase():
         if re.search(landscape_index, i):
             landscape_grassname_dila02clean_pid=i.replace("\n","")
             
-    ##simulation_000001_p029_h059_HABMAT_grassclump_dila02_complete_AREApix
+    ## lndscp_0001_Mapa0001_tif_HABMAT_dila_60m_orig_clump_mata_limpa_AreaHA
     file_dila02clean_AREApix=open("simulados_HABMAT_grassclump_dila02_clean_AREApix.txt","r")
     dila02clean_AREApix=file_dila02clean_AREApix.readlines()
     file_dila02clean_AREApix.close()
