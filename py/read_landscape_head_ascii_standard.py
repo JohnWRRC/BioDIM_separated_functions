@@ -3,9 +3,15 @@ from head_split_up_line import head_split_up_line
 def read_landscape_head_ascii_standard(input_land, matrixmode):
     '''
     This function read the header and the matrix of an ascii map, and returns both the
-    header, with limits and number of rows/cols, and a matrix corresponding to the map
-    COMPLETE!!!
+    header, with map limits and number of rows/cols, and a matrix corresponding to the map
+    Input:
+    - input_land: GRASS GIS raster map
+    - matrixmode: type of map - int, float, or long
+    Output:
+    - head: header of the ascii map, with map limits (north, south, east, west) and number of rows/cols
+    - matrix: input map in a form of matrix (2 dimension list)
     '''
+    
     input_file = open(input_land, 'r')
     line = input_file.readline()
     nlines = 0

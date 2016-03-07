@@ -69,6 +69,11 @@ from reset_isdispersing import reset_isdispersing
 from estimate_effectivedistance import estimate_effectivedistance
 #---------------------------------------------------
 
+# Mortality modules
+#---------------------------------------------------
+from mortality import get_safetyness_mortality, kill_individual_new
+#---------------------------------------------------
+
 # Movement modules
 #---------------------------------------------------
 from disperse_random_walk import disperse_random_walk
@@ -78,11 +83,14 @@ from choose_dispersaldirection import choose_dispersaldirection
 
 # Landscape modules
 #---------------------------------------------------
-from select_landscape_grassnames import *
+#from select_landscape_grassnames import *
 #---------------------------------------------------
-from export_raster_from_grass import *
+#from export_raster_from_grass import *
 #---------------------------------------------------
-from read_landscape_head_ascii_standard import read_landscape_head_ascii_standard
+#from read_landscape_head_ascii_standard import read_landscape_head_ascii_standard
+# the three function above are used by pickup_one_landscape
+#---------------------------------------------------
+from pickup_one_landscape import pickup_one_landscape
 #---------------------------------------------------
 from color_pallete import color_pallete
 #---------------------------------------------------
@@ -95,9 +103,8 @@ from identify_habarea import identify_habarea
 from check_landscaperange import check_landscaperange
 #---------------------------------------------------
 
-
 def estimate_movement_cost(actualcost, distfromedgePix, aux_xy):
-    protecdness = get_safetyness_mortality(tab_in=Form1.tab_safetyness, distPix=distfromedgePix)
+    protecdness = get_safetyness_mortality(tab_in=Form1.tab_safetyness, spatialresolution=Form1.spatialresolution, species_profile=Form1.species_profile, distPix=distfromedgePix)
     
     aux=[aux_xy]
     aux, changed_quadrante = check_landscaperange(aux, Form1.landscape_matrix)
@@ -125,55 +132,6 @@ def estimate_movement_cost(actualcost, distfromedgePix, aux_xy):
     return cost
 
 #---------------------------------------------------
-def get_safetyness_mortality(tab_in, distPix=0):
-    distMeters=float(distPix)*float(Form1.spatialresolution)
-    if distMeters>0:
-        distMeters=float(distPix+1)*float(Form1.spatialresolution)
-    for line in range(len(tab_in)):
-        line_dist=tab_in[line][0]
-        if float(distMeters) < float(line_dist):
-            if line==0:
-                if Form1.species_profile=="Core dependent":
-                    return tab_in[line][1]
-                elif  Form1.species_profile=="Frag. dependent":
-                    return tab_in[line][2]
-                elif  Form1.species_profile=="Habitat dependent":
-                    return tab_in[line][3]
-                elif  Form1.species_profile=="Moderately generalist":
-                    return tab_in[line][4]
-                elif  Form1.species_profile=="Highly generalist":
-                    return tab_in[line][5]
-                else:
-                    return 0
-                    
-            else:
-                if Form1.species_profile=="Core dependent":
-                    return tab_in[line-1][1]
-                elif  Form1.species_profile=="Frag. dependent":
-                    return tab_in[line-1][2]
-                elif  Form1.species_profile=="Habitat dependent":
-                    return tab_in[line-1][3]
-                elif  Form1.species_profile=="Moderately generalist":
-                    return tab_in[line-1][4]
-                elif  Form1.species_profile=="Highly generalist":
-                    return tab_in[line-1][5]
-    return 0
-
-#---------------------------------------------------
-def kill_individual_new(distfromedgePix):
-    
-    prob_die=get_safetyness_mortality(tab_in=Form1.tab_mortality, distPix=distfromedgePix)
-    
-    prob_dieMAX=0.2
-    prob_dieMAX_target=0.001
-    prob_die_corrected=prob_die/prob_dieMAX*prob_dieMAX_target
-
-    if prob_die_corrected>random.uniform(0,1):
-        continuealive=0
-    else:
-        continuealive=1
-
-    return continuealive
 
 #---------------------------------------------------
 def organize_output(moment, grassname_habmat, isdispersing, isfemale, islive, totaldistance, effectivedistance, experiment_info, actualrun, actual_step, actual_movementcost, timestep_waslive, number_of_meetings, LOCI_start, LOCI_end):
@@ -367,74 +325,6 @@ def organize_output(moment, grassname_habmat, isdispersing, isfemale, islive, to
 
 #---------------------------------------------------
 
-
-def pickup_one_landscape(inputDir,tempDir):
-    '''This part select one random landscape when
-       from the Spatial Data Base
-    '''
-    # tenho uma duvida
-    # esses arquivos vao para o temp ou para o input?, sao aqueles ascs que ele exporta no inicio
-    if Form1.UserBaseMap: 
-        os.chdir(Form1.defaultDIR)
-        os.chdir(inputDir)
-        landscape_grassname_habmat, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix, landscape_grassname_dila01clean_pid, landscape_grassname_dila01clean_AREApix, landscape_grassname_dila02clean_pid, landscape_grassname_dila02clean_AREApix=select_landscape_grassnames_userbase()
-                
-        export_raster_from_grass_userbase(landscape_grassname_habmat, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix, landscape_grassname_dila01clean_pid, landscape_grassname_dila01clean_AREApix, landscape_grassname_dila02clean_pid, landscape_grassname_dila02clean_AREApix, Form1.defaultDIR, Form1.inputDir, Form1.tempDir)
-        
-        landscape_head, landscape_matrix=read_landscape_head_ascii_standard('random_landscape_habmat.asc',"int") # mudei essa linha para ler do habmat
-        landscape_head, landscape_habdist=read_landscape_head_ascii_standard('random_landscape_habdist.asc',"float")
-        landscape_head, landscape_habmat_pid=read_landscape_head_ascii_standard('random_landscape_habmat_pid.asc',"long")
-        landscape_head, landscape_habmat_areapix=read_landscape_head_ascii_standard('random_landscape_habmat_areapix.asc',"long")        
-        #landscape_head, landscape_hqmqlq_quality=read_landscape_head_ascii_standard('random_landscape_hqmqlq_quality.asc',"int")        
-        #landscape_head, landscape_hqmqlq_AREAqual=read_landscape_head_ascii_standard('random_landscape_hqmqlq_AREAqual.asc',"long")
-        
-        #------------------------
-        landscape_head, landscape_frag_pid=read_landscape_head_ascii_standard('random_landscape_frag_pid.asc',"int")        
-        landscape_head, landscape_frag_AREApix=read_landscape_head_ascii_standard('random_landscape_frag_AREApix.asc',"long")
-        #landscape_head, landscape_frag_AREAqual=read_landscape_head_ascii_standard('random_landscape_frag_AREAqual.asc',"long")
-    
-        #------------------------
-        landscape_head, landscape_dila01clean_pid=read_landscape_head_ascii_standard('random_landscape_dila01clean_pid.asc',"int")        
-        landscape_head, landscape_dila01clean_AREApix=read_landscape_head_ascii_standard('random_landscape_dila01clean_AREApix.asc',"long")
-        #landscape_head, landscape_dila01clean_AREAqual=read_landscape_head_ascii_standard('random_landscape_dila01clean_AREAqual.asc',"long")
-    
-        #------------------------
-        landscape_head, landscape_dila02clean_pid=read_landscape_head_ascii_standard('random_landscape_dila02clean_pid.asc',"int")        
-        landscape_head, landscape_dila02clean_AREApix=read_landscape_head_ascii_standard('random_landscape_dila02clean_AREApix.asc',"long")
-        #landscape_head, landscape_dila02clean_AREAqual=read_landscape_head_ascii_standard('random_landscape_dila02clean_AREAqual.asc',"long")  
-        
-        return landscape_head, landscape_matrix, landscape_grassname_habmat, landscape_habdist, landscape_habmat_pid, landscape_habmat_areapix, landscape_frag_pid, landscape_frag_AREApix, landscape_dila01clean_pid, landscape_dila01clean_AREApix, landscape_dila02clean_pid, landscape_dila02clean_AREApix
-    else:
-        os.chdir(Form1.defaultDIR)
-        os.chdir(inputDir)        
-        landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_hqmqlq_quality, landscape_grassname_hqmqlq_AREAqual, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix,landscape_grassname_frag_AREAqual,landscape_grassname_dila01clean_pid,landscape_grassname_dila01clean_AREApix,landscape_grassname_dila01clean_AREAqual,landscape_grassname_dila02clean_pid,landscape_grassname_dila02clean_AREApix,landscape_grassname_dila02clean_AREAqual=select_landscape_grassnames()
-     
-        export_raster_from_grass(landscape_grassname_habmat, landscape_grassname_hqmqlq, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_hqmqlq_quality, landscape_grassname_hqmqlq_AREAqual, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix, landscape_grassname_frag_AREAqual, landscape_grassname_dila01clean_pid, landscape_grassname_dila01clean_AREApix, landscape_grassname_dila01clean_AREAqual, landscape_grassname_dila02clean_pid, landscape_grassname_dila02clean_AREApix, landscape_grassname_dila02clean_AREAqual, Form1.defaultDIR, Form1.inputDir, Form1.tempDir)
-    
-        landscape_head, landscape_matrix=read_landscape_head_ascii_standard('random_landscape_hqmqlq.asc',"int")
-        landscape_head, landscape_habdist=read_landscape_head_ascii_standard('random_landscape_habdist.asc',"float")
-        landscape_head, landscape_habmat_pid=read_landscape_head_ascii_standard('random_landscape_habmat_pid.asc',"long")
-        landscape_head, landscape_habmat_areapix=read_landscape_head_ascii_standard('random_landscape_habmat_areapix.asc',"long")        
-        landscape_head, landscape_hqmqlq_quality=read_landscape_head_ascii_standard('random_landscape_hqmqlq_quality.asc',"int")        
-        landscape_head, landscape_hqmqlq_AREAqual=read_landscape_head_ascii_standard('random_landscape_hqmqlq_AREAqual.asc',"long")
-        
-        #------------------------
-        landscape_head, landscape_frag_pid=read_landscape_head_ascii_standard('random_landscape_frag_pid.asc',"int")        
-        landscape_head, landscape_frag_AREApix=read_landscape_head_ascii_standard('random_landscape_frag_AREApix.asc',"long")
-        landscape_head, landscape_frag_AREAqual=read_landscape_head_ascii_standard('random_landscape_frag_AREAqual.asc',"long")
-    
-        #------------------------
-        landscape_head, landscape_dila01clean_pid=read_landscape_head_ascii_standard('random_landscape_dila01clean_pid.asc',"int")        
-        landscape_head, landscape_dila01clean_AREApix=read_landscape_head_ascii_standard('random_landscape_dila01clean_AREApix.asc',"long")
-        landscape_head, landscape_dila01clean_AREAqual=read_landscape_head_ascii_standard('random_landscape_dila01clean_AREAqual.asc',"long")
-    
-        #------------------------
-        landscape_head, landscape_dila02clean_pid=read_landscape_head_ascii_standard('random_landscape_dila02clean_pid.asc',"int")        
-        landscape_head, landscape_dila02clean_AREApix=read_landscape_head_ascii_standard('random_landscape_dila02clean_AREApix.asc',"long")
-        landscape_head, landscape_dila02clean_AREAqual=read_landscape_head_ascii_standard('random_landscape_dila02clean_AREAqual.asc',"long")
-        return landscape_head, landscape_matrix, landscape_grassname_habmat, landscape_habdist, landscape_habmat_pid, landscape_habmat_areapix, landscape_hqmqlq_quality, landscape_hqmqlq_AREAqual, landscape_frag_pid, landscape_frag_AREApix,landscape_frag_AREAqual, landscape_dila01clean_pid, landscape_dila01clean_AREApix,landscape_dila01clean_AREAqual, landscape_dila02clean_pid, landscape_dila02clean_AREApix,landscape_dila02clean_AREAqual
-    
-
 #----------------------------------------------------------------------
 
 def get_listofposition(modified_indiv_xy_startpos):
@@ -447,35 +337,6 @@ def get_listofposition(modified_indiv_xy_startpos):
 
     listofpositions, changed_quadrante_psicologic = check_landscaperange(listofpositions, Form1.landscape_matrix)
     return listofpositions
-
-#----------------------------------------------------------------------
-#def check_landscaperange(list_of_xy):
-    #list_of_xy_modified=[]
-    #for i in range(len(list_of_xy)):
-        #list_of_xy_modified.append(list_of_xy[i])
-    
-    #changed_quadrant=[]
-    #for indiv in range(len(list_of_xy)):
-        ##let row be ok
-        #ns=0
-        #ew=0
-        
-        #if list_of_xy_modified[indiv][0]<0:
-            #list_of_xy_modified[indiv][0]=list_of_xy_modified[indiv][0]+len(Form1.landscape_matrix)
-            #ns=+1 #gone to North
-        #if list_of_xy_modified[indiv][0]>len(Form1.landscape_matrix):
-            #list_of_xy_modified[indiv][0]=list_of_xy_modified[indiv][0]-len(Form1.landscape_matrix)
-            #ns=-1 #gone to South
-        ##let col be ok    
-        #if list_of_xy_modified[indiv][1]<0:
-            #list_of_xy_modified[indiv][1]=list_of_xy_modified[indiv][1]+len(Form1.landscape_matrix)
-            #ew=-1 #gone to West
-        #if list_of_xy_modified[indiv][1]>len(Form1.landscape_matrix):
-            #list_of_xy_modified[indiv][1]=list_of_xy_modified[indiv][1]-len(Form1.landscape_matrix)
-            #ew=+1 #gone to Eest
-        #changed_quadrant.append([ns,ew])
-    #return list_of_xy_modified, changed_quadrant
-
 
 #----------------------------------------------------------------------
 def OnHabitat(listposition):
@@ -703,9 +564,7 @@ def plot_walk(landscape_matrix, indiv_xy, aux_isdispersing, aux_islive, nruns, a
     saverunTS="moves/"+Form1.output_prefix+"_run_"+myzeros+str(nruns+1)+"_TS_"+myzerosTS+str(timestep+1)+".png"
     im2=im.copy()
     im2.save(saverunTS)
-    
-    
-    
+       
     random.seed()  #to release the random.seed()
 
 class Form1(wx.Panel):
@@ -729,6 +588,7 @@ class Form1(wx.Panel):
         Form1.include_habitatquality="HabitatQuality_NO"
         Form1.plotmovements=0
         Form1.include_probdeath=0
+        Form1.exportPNG=False
         
         os.chdir(Form1.defaultDIR)
         os.chdir(Form1.inputDir)
@@ -751,9 +611,16 @@ class Form1(wx.Panel):
         #***********************************************
         # list of maps
         if Form1.UserBaseMap:
-            Form1.background_filename=["random_landscape_habmat.png","random_landscape_habdist.png","random_landscape_habmat_pid.png","random_landscape_habmat_areapix.png","random_landscape_frag_pid.png","random_landscape_frag_AREApix.png"]
+            if Form1.exportPNG:
+                Form1.background_filename=["random_landscape_habmat.png","random_landscape_habdist.png","random_landscape_habmat_pid.png","random_landscape_habmat_areapix.png","random_landscape_frag_pid.png","random_landscape_frag_AREApix.png"]
+            else:
+                Form1.background_filename=["random_landscape_habmat.png"]
         else:
-            Form1.background_filename=["random_landscape_hqmqlq.png","random_landscape_habmat.png","random_landscape_habdist.png","random_landscape_habmat_pid.png","random_landscape_habmat_areapix.png","random_landscape_hqmqlq_quality.png","random_landscape_hqmqlq_AREAqual.png","random_landscape_frag_pid.png","random_landscape_frag_AREApix.png","random_landscape_frag_AREAqual.png"]
+            if Form1.exportPNG:
+                Form1.background_filename=["random_landscape_hqmqlq.png","random_landscape_habmat.png","random_landscape_habdist.png","random_landscape_habmat_pid.png","random_landscape_habmat_areapix.png","random_landscape_hqmqlq_quality.png","random_landscape_hqmqlq_AREAqual.png","random_landscape_frag_pid.png","random_landscape_frag_AREApix.png","random_landscape_frag_AREAqual.png"]
+            else:
+                Form1.background_filename=["random_landscape_hqmqlq.png","random_landscape_habmat.png"]
+                
         Form1.background_filename_start=Form1.background_filename
 
         #LOCI Informations -----------------------------
@@ -800,9 +667,9 @@ class Form1(wx.Panel):
         # ------------------------
         # Selecting a landscape and calculating initial population
         if Form1.UserBaseMap:
-            Form1.landscape_head, Form1.landscape_matrix, Form1.landscape_grassname_habmat, Form1.landscape_habdist, Form1.landscape_habmat_pid, Form1.landscape_habmat_areapix, Form1.landscape_frag_pid, Form1.landscape_frag_AREApix, Form1.landscape_dila01clean_pid, Form1.landscape_dila01clean_AREApix, Form1.landscape_dila02clean_pid, Form1.landscape_dila02clean_AREApix=pickup_one_landscape(Form1.inputDir,Form1.tempDir)
+            Form1.landscape_head, Form1.landscape_matrix, Form1.landscape_grassname_habmat, Form1.landscape_habdist, Form1.landscape_habmat_pid, Form1.landscape_habmat_areapix, Form1.landscape_frag_pid, Form1.landscape_frag_AREApix, Form1.landscape_dila01clean_pid, Form1.landscape_dila01clean_AREApix, Form1.landscape_dila02clean_pid, Form1.landscape_dila02clean_AREApix=pickup_one_landscape(Form1.defaultDIR, Form1.inputDir, Form1.tempDir, userbasemap=Form1.UserBaseMap, exportPNG=Form1.exportPNG)
         else:
-            Form1.landscape_head, Form1.landscape_matrix, Form1.landscape_grassname_habmat, Form1.landscape_habdist,Form1.landscape_habmat_pid,Form1.landscape_habmat_areapix,Form1.landscape_hqmqlq_quality,Form1.landscape_hqmqlq_AREAqual,Form1.landscape_frag_pid,Form1.landscape_frag_AREApix,Form1.landscape_frag_AREAqual,Form1.landscape_dila01clean_pid,Form1.landscape_dila01clean_AREApix,Form1.landscape_dila01clean_AREAqual,Form1.landscape_dila02clean_pid,Form1.landscape_dila02clean_AREApix,Form1.landscape_dila02clean_AREAqual=pickup_one_landscape(Form1.inputDir,Form1.tempDir)
+            Form1.landscape_head, Form1.landscape_matrix, Form1.landscape_grassname_habmat, Form1.landscape_habdist,Form1.landscape_habmat_pid,Form1.landscape_habmat_areapix,Form1.landscape_hqmqlq_quality,Form1.landscape_hqmqlq_AREAqual,Form1.landscape_frag_pid,Form1.landscape_frag_AREApix,Form1.landscape_frag_AREAqual,Form1.landscape_dila01clean_pid,Form1.landscape_dila01clean_AREApix,Form1.landscape_dila01clean_AREAqual,Form1.landscape_dila02clean_pid,Form1.landscape_dila02clean_AREApix,Form1.landscape_dila02clean_AREAqual=pickup_one_landscape(Form1.defaultDIR, Form1.inputDir, Form1.tempDir, userbasemap=Form1.UserBaseMap, exportPNG=Form1.exportPNG)
         
         if Form1.UserBaseMap:
             pland, forest=getForest_habmat(landscape_matrix = Form1.landscape_matrix)
@@ -959,9 +826,9 @@ class Form1(wx.Panel):
             
             #pickupland scape
             if Form1.UserBaseMap:
-                Form1.landscape_head, Form1.landscape_matrix, Form1.landscape_grassname_habmat, Form1.landscape_habdist, Form1.landscape_habmat_pid, Form1.landscape_habmat_areapix, Form1.landscape_frag_pid, Form1.landscape_frag_AREApix, Form1.landscape_dila01clean_pid, Form1.landscape_dila01clean_AREApix, Form1.landscape_dila02clean_pid, Form1.landscape_dila02clean_AREApix=pickup_one_landscape(Form1.inputDir,Form1.tempDir)
+                Form1.landscape_head, Form1.landscape_matrix, Form1.landscape_grassname_habmat, Form1.landscape_habdist, Form1.landscape_habmat_pid, Form1.landscape_habmat_areapix, Form1.landscape_frag_pid, Form1.landscape_frag_AREApix, Form1.landscape_dila01clean_pid, Form1.landscape_dila01clean_AREApix, Form1.landscape_dila02clean_pid, Form1.landscape_dila02clean_AREApix=pickup_one_landscape(Form1.defaultDIR, Form1.inputDir, Form1.tempDir, userbasemap=Form1.UserBaseMap, exportPNG=Form1.exportPNG)
             else:
-                Form1.landscape_head, Form1.landscape_matrix, Form1.landscape_grassname_habmat, Form1.landscape_habdist, Form1.landscape_habmat_pid, Form1.landscape_habmat_areapix,Form1.landscape_hqmqlq_quality,Form1.landscape_hqmqlq_AREAqual,Form1.landscape_frag_pid,Form1.landscape_frag_AREApix,Form1.landscape_frag_AREAqual,Form1.landscape_dila01clean_pid,Form1.landscape_dila01clean_AREApix,Form1.landscape_dila01clean_AREAqual,Form1.landscape_dila02clean_pid,Form1.landscape_dila02clean_AREApix,Form1.landscape_dila02clean_AREAqual=pickup_one_landscape(Form1.inputDir,Form1.tempDir)
+                Form1.landscape_head, Form1.landscape_matrix, Form1.landscape_grassname_habmat, Form1.landscape_habdist, Form1.landscape_habmat_pid, Form1.landscape_habmat_areapix,Form1.landscape_hqmqlq_quality,Form1.landscape_hqmqlq_AREAqual,Form1.landscape_frag_pid,Form1.landscape_frag_AREApix,Form1.landscape_frag_AREAqual,Form1.landscape_dila01clean_pid,Form1.landscape_dila01clean_AREApix,Form1.landscape_dila01clean_AREAqual,Form1.landscape_dila02clean_pid,Form1.landscape_dila02clean_AREApix,Form1.landscape_dila02clean_AREAqual=pickup_one_landscape(Form1.defaultDIR, Form1.inputDir, Form1.tempDir, userbasemap=Form1.UserBaseMap, exportPNG=Form1.exportPNG)
                         
             # background
             os.chdir(Form1.defaultDIR)
@@ -1221,7 +1088,7 @@ class Form1(wx.Panel):
                                 indiv_movementcost[num_of_indiv]=estimate_movement_cost(actualcost=indiv_movementcost[num_of_indiv], distfromedgePix=indiv_distedgePix[num_of_indiv], aux_xy=indiv_xy[num_of_indiv])
                                 
                                 if Form1.include_probdeath==1:
-                                    indiv_islive[num_of_indiv]=kill_individual_new(distfromedgePix=indiv_distedgePix[num_of_indiv])
+                                    indiv_islive[num_of_indiv]=kill_individual_new(tab_mortality=Form1.tab_mortality, spatialres=Form1.spatialresolution, sp_profile=Form1.species_profile, distfromedgePix=indiv_distedgePix[num_of_indiv])
                             
                             if indiv_islive[num_of_indiv]==1:
                                 ###\\\ TROCA GENS
@@ -1339,9 +1206,9 @@ class Form1(wx.Panel):
                     os.chdir(Form1.defaultDIR)
                     os.chdir(Form1.tempDir)
                     if Form1.UserBaseMap:
-                        Form1.landscape_head, Form1.landscape_matrix, Form1.landscape_grassname_habmat, Form1.landscape_habdist, Form1.landscape_habmat_pid, Form1.landscape_habmat_areapix, Form1.landscape_frag_pid, Form1.landscape_frag_AREApix, Form1.landscape_dila01clean_pid, Form1.landscape_dila01clean_AREApix, Form1.landscape_dila02clean_pid, Form1.landscape_dila02clean_AREApix=pickup_one_landscape(Form1.inputDir,Form1.tempDir)
+                        Form1.landscape_head, Form1.landscape_matrix, Form1.landscape_grassname_habmat, Form1.landscape_habdist, Form1.landscape_habmat_pid, Form1.landscape_habmat_areapix, Form1.landscape_frag_pid, Form1.landscape_frag_AREApix, Form1.landscape_dila01clean_pid, Form1.landscape_dila01clean_AREApix, Form1.landscape_dila02clean_pid, Form1.landscape_dila02clean_AREApix=pickup_one_landscape(Form1.defaultDIR, Form1.inputDir, Form1.tempDir, userbasemap=Form1.UserBaseMap, exportPNG=Form1.exportPNG)
                     else:
-                        Form1.landscape_head, Form1.landscape_matrix, Form1.landscape_grassname_habmat, Form1.landscape_habdist,Form1.landscape_habmat_pid,Form1.landscape_habmat_areapix,Form1.landscape_hqmqlq_quality,Form1.landscape_hqmqlq_AREAqual,Form1.landscape_frag_pid,Form1.landscape_frag_AREApix,Form1.landscape_frag_AREAqual,Form1.landscape_dila01clean_pid,Form1.landscape_dila01clean_AREApix,Form1.landscape_dila01clean_AREAqual,Form1.landscape_dila02clean_pid,Form1.landscape_dila02clean_AREApix,Form1.landscape_dila02clean_AREAqual=pickup_one_landscape(Form1.inputDir,Form1.tempDir)
+                        Form1.landscape_head, Form1.landscape_matrix, Form1.landscape_grassname_habmat, Form1.landscape_habdist,Form1.landscape_habmat_pid,Form1.landscape_habmat_areapix,Form1.landscape_hqmqlq_quality,Form1.landscape_hqmqlq_AREAqual,Form1.landscape_frag_pid,Form1.landscape_frag_AREApix,Form1.landscape_frag_AREAqual,Form1.landscape_dila01clean_pid,Form1.landscape_dila01clean_AREApix,Form1.landscape_dila01clean_AREAqual,Form1.landscape_dila02clean_pid,Form1.landscape_dila02clean_AREApix,Form1.landscape_dila02clean_AREAqual=pickup_one_landscape(Form1.defaultDIR, Form1.inputDir, Form1.tempDir, userbasemap=Form1.UserBaseMap, exportPNG=Form1.exportPNG)
                                        
                     if Form1.changehomerangesize==0: #not change
                         pass
