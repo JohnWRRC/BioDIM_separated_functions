@@ -21,7 +21,7 @@ def pickup_one_landscape(defaultDir, inputDir, tempDir, userbasemap = False, exp
         os.chdir(inputDir)
         landscape_grassname_habmat, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix, landscape_grassname_dila01clean_pid, landscape_grassname_dila01clean_AREApix, landscape_grassname_dila02clean_pid, landscape_grassname_dila02clean_AREApix=select_landscape_grassnames_userbase()
                 
-        export_raster_from_grass_userbase(landscape_grassname_habmat, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix, landscape_grassname_dila01clean_pid, landscape_grassname_dila01clean_AREApix, landscape_grassname_dila02clean_pid, landscape_grassname_dila02clean_AREApix, defaultDir, inputDir, tempDir, exportPNG=True)
+        export_raster_from_grass_userbase(landscape_grassname_habmat, landscape_grassname_habdist, landscape_grassname_habmat_pid, landscape_grassname_habmat_areapix, landscape_grassname_frag_pid, landscape_grassname_frag_AREApix, landscape_grassname_dila01clean_pid, landscape_grassname_dila01clean_AREApix, landscape_grassname_dila02clean_pid, landscape_grassname_dila02clean_AREApix, defaultDir, inputDir, tempDir, exportPNG=exportPNG)
         
         landscape_head, landscape_matrix=read_landscape_head_ascii_standard('random_landscape_habmat.asc',"int") # mudei essa linha para ler do habmat
         landscape_head, landscape_habdist=read_landscape_head_ascii_standard('random_landscape_habdist.asc',"float")
