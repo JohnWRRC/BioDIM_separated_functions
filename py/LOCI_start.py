@@ -1,6 +1,11 @@
 import random
 
 def LOCI_start(aux_loci_struc):
+    '''
+    This function defines the basic structure of the loci/alleles of individuals in a given simulation
+    COMPLETE!!
+    '''
+    
     number_of_loci=len(aux_loci_struc)
     aux_LOCI=[]
     for locus_ID in range(number_of_loci):

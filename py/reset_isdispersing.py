@@ -1,5 +1,10 @@
 
 def reset_isdispersing(indiv_isdispersing, indiv_whichpatchid, indiv_habareapix, indiv_islive, indiv_isdispersingRESET,spatialresolution,homerangesize):
+    '''
+    This function...
+    COMPLETE!
+    '''
+    
     isdispersing_aux=[]
     isdispersingRESET_aux=[]
     

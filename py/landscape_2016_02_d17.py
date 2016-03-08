@@ -32,13 +32,7 @@ ID_IBMCFG=102
 ID_EXIT=110
 
 
-# Genetic modules
 #---------------------------------------------------
-from gene_exchance import gene_exchance
-#---------------------------------------------------
-from LOCI_start import LOCI_start
-#---------------------------------------------------
-
 # Auxiliary modules
 #---------------------------------------------------
 from read_table import read_table
@@ -46,46 +40,19 @@ from read_table import read_table
 # from head_split_up_line import head_split_up_line
 # this function is used in the read_landscape_head_ascii_standard module
 #---------------------------------------------------
-from distance_between_indiv import  distance_between_indiv 
+from distance_between_indiv import  distance_between_indiv # leads with spatial resolution/distance
 #---------------------------------------------------
-from estimate_distedgePix import estimate_distedgePix
-#---------------------------------------------------
-
-# Output models
-#---------------------------------------------------
-from create_synthesis import create_synthesis
-#---------------------------------------------------
-
-# Population modules
-#---------------------------------------------------
-from estimate_start_popsize import estimate_start_popsize
-#---------------------------------------------------
-from populate import populate
-#---------------------------------------------------
-from check_overpopulation_onpatch import check_overpopulation_onpatch
-#---------------------------------------------------
-from reset_isdispersing import reset_isdispersing
+from estimate_distedgePix import estimate_distedgePix # leads with spatial resolution/distance
 #---------------------------------------------------
 from estimate_effectivedistance import estimate_effectivedistance
 #---------------------------------------------------
 
-# Mortality modules
 #---------------------------------------------------
-from mortality import get_safetyness_mortality, kill_individual_new
-#---------------------------------------------------
-
-# Movement modules
-#---------------------------------------------------
-from disperse_random_walk import disperse_random_walk
-#---------------------------------------------------
-from choose_dispersaldirection import choose_dispersaldirection
-#---------------------------------------------------
-
 # Landscape modules
 #---------------------------------------------------
-#from select_landscape_grassnames import *
+#from select_landscape_grassnames import * 
 #---------------------------------------------------
-#from export_raster_from_grass import *
+#from export_raster_from_grass import *             ### GRASS FUNCTIONS
 #---------------------------------------------------
 #from read_landscape_head_ascii_standard import read_landscape_head_ascii_standard
 # the three function above are used by pickup_one_landscape
@@ -94,22 +61,47 @@ from pickup_one_landscape import pickup_one_landscape
 #---------------------------------------------------
 from color_pallete import color_pallete
 #---------------------------------------------------
-from getForest import *
+from getForest import *                             # leads with spatial resolution - PIXELS
 #---------------------------------------------------
-from identify_patchid import identify_patchid
+from identify_patchid import identify_patchid       # leads with spatial resolution - PIXELS
 #---------------------------------------------------
-from identify_habarea import identify_habarea
+from identify_habarea import identify_habarea       # leads with spatial resolution - PIXELS
 #---------------------------------------------------
-from check_landscaperange import check_landscaperange
+from check_landscaperange import check_landscaperange # leads with spatial resolution - PIXELS and distance
 #---------------------------------------------------
 
+#---------------------------------------------------
+# Genetic modules
+#---------------------------------------------------
+from gene_exchange import gene_exchange             
+#---------------------------------------------------
+from LOCI_start import LOCI_start
+#---------------------------------------------------
+
+#---------------------------------------------------
+# Population modules
+#---------------------------------------------------
+from estimate_start_popsize import estimate_start_popsize # leads with spatial resolution - PIXELS AND AREA
+#---------------------------------------------------
+from populate import populate                       # leads with spatial resolution - PIXELS
+#---------------------------------------------------
+from check_overpopulation_onpatch import check_overpopulation_onpatch # leads with spatial resolution - PIXELS AND AREA
+#---------------------------------------------------
+from reset_isdispersing import reset_isdispersing   # leads with spatial resolution - PIXELS AND AREA
+#---------------------------------------------------
+
+#---------------------------------------------------
+# Mortality modules
+#---------------------------------------------------
+from mortality import get_safetyness_mortality, kill_individual_new # leads with spatial resolution - PIXELS AND DISTANCE
+#---------------------------------------------------
 def estimate_movement_cost(actualcost, distfromedgePix, aux_xy):
     protecdness = get_safetyness_mortality(tab_in=Form1.tab_safetyness, spatialresolution=Form1.spatialresolution, species_profile=Form1.species_profile, distPix=distfromedgePix)
     
     aux=[aux_xy]
     aux, changed_quadrante = check_landscaperange(aux, Form1.landscape_matrix)
     YY=aux[0][0]
-    XX=aux[0][1]        
+    XX=aux[0][1]        # leads with spatial resolution - PIXELS
     row=int(YY)
     col=int(XX)
     
@@ -134,7 +126,206 @@ def estimate_movement_cost(actualcost, distfromedgePix, aux_xy):
 #---------------------------------------------------
 
 #---------------------------------------------------
+# Movement modules
+#---------------------------------------------------
+from disperse_random_walk import disperse_random_walk
+#---------------------------------------------------
+from choose_dispersaldirection import choose_dispersaldirection #### WHY IS THAT!?
+#---------------------------------------------------
+
+def get_listofposition(modified_indiv_xy_startpos):
+    n_positions=20
+    listofpositions=[]
+    for pos in range(n_positions):
+        deltaX=random.uniform(-Form1.movement_dist_sigma_pixel, Form1.movement_dist_sigma_pixel)
+        deltaY=random.uniform(-Form1.movement_dist_sigma_pixel, Form1.movement_dist_sigma_pixel)
+        listofpositions.append([modified_indiv_xy_startpos[0]+deltaX, modified_indiv_xy_startpos[1]+deltaY])
+
+    listofpositions, changed_quadrante_psicologic = check_landscaperange(listofpositions, Form1.landscape_matrix)
+    return listofpositions
+
+#----------------------------------------------------------------------
+def OnHabitat(listposition): # leads with spatial resolution - PIXELS AND DISTANCE
+    aux=[]
+    distfromedgePix=[]
+    for i in range(len(listposition)):
+        aux.append([listposition[i][0],listposition[i][1]])
+        
+    OnHabitatList=[] #X, Y
+    OnHabitatEdgedistPixList=[] #DIST from edge
+    
+    for position in range(len(aux)):
+        aux, changed_quadrante=check_landscaperange(aux, Form1.landscape_matrix)
+        YY=aux[position][0]
+        XX=aux[position][1]        
+        row=int(YY)
+        col=int(XX)
+        distfromedgePix.append(Form1.landscape_habdist[row][col])
+
+
+        ##'Random walk','Core dependent','Frag. dependent', 'Habitat dependent', 'Moderately generalist'
+        
+        if distfromedgePix[position]*Form1.spatialresolution<=0 and Form1.species_profile=="Habitat dependent":
+            # <=0 above means the the full patch is considered.. 
+            # corridor (<60m) IS INCLUDED as "habitat patch"
+            OnHabitatList.append([YY,XX])
+            OnHabitatEdgedistPixList.append(Form1.landscape_habdist[row][col])
+            
+        if distfromedgePix[position]*Form1.spatialresolution<(-30) and Form1.species_profile=="Frag. dependent":
+        
+            # < (-30) means 30 meters from edge
+            # so only the fragment is considered.. corridor (<60m)
+            # is NOT INCLUDED as "habitat patch"
+            OnHabitatList.append([YY,XX])
+            OnHabitatEdgedistPixList.append(Form1.landscape_habdist[row][col])
+
+        if distfromedgePix[position]*Form1.spatialresolution<(-30) and Form1.species_profile=="Core dependent":
+            ### I COPYED THIS PART FROM ABOVE ON FEV2010 - CHECK CHECK CHECK m
+            #####  check -30 !!!!
+            # < (-30) means 30 meters from edge
+            # so only the fragment is considered.. corridor (<60m)
+            # is NOT INCLUDED as "habitat patch"
+            OnHabitatList.append([YY,XX])
+            OnHabitatEdgedistPixList.append(Form1.landscape_habdist[row][col])
+            
+        if distfromedgePix[position]*Form1.spatialresolution<=(+30) and Form1.species_profile=="Moderately generalist":
+            # <=+30 above means the the full patch is considered.. 
+            # corridor (<60m) IS INCLUDED as "habitat patch"
+            # Positions <30 of ANY HABITAT PATCH is considered within habitat patch"
+            
+            OnHabitatList.append([YY,XX])
+            OnHabitatEdgedistPixList.append(Form1.landscape_habdist[row][col])
+            
+        if distfromedgePix[position]*Form1.spatialresolution<=(+60) and Form1.species_profile=="Highly generalist":
+            # <=+60 above means the the full patch is considered.. 
+            # corridor (<60m) IS INCLUDED as "habitat patch"
+            # Positions <60 of ANY HABITAT PATCH is considered within habitat patch"
+            
+            OnHabitatList.append([YY,XX])
+            OnHabitatEdgedistPixList.append(Form1.landscape_habdist[row][col])
+
+    return OnHabitatList, OnHabitatEdgedistPixList
+
+#----------------------------------------------------------------------
+def disperse_habitat_dependent(indiv_xy, indiv_isdispersing,indiv_totaldistance,indiv_dispdirectionX,indiv_dispdirectionY):
+    modified_indiv_xy=[]
+    for i in range(len(indiv_xy)):
+        modified_indiv_xy.append([indiv_xy[i][0],indiv_xy[i][1]])
+   
+    for indiv in range(len(modified_indiv_xy)):
+        x1=modified_indiv_xy[indiv][0]
+        y1=modified_indiv_xy[indiv][1]
+        if indiv_isdispersing[indiv]==0:
+            modified_indiv_xy_listposition=get_listofposition(modified_indiv_xy_startpos=modified_indiv_xy[indiv])
+            modified_indiv_xy_listposition, distfromedgePix=OnHabitat(modified_indiv_xy_listposition)
+            
+            if len(modified_indiv_xy_listposition)>0:
+                PROB_go_core_region=0
+
+                if Form1.species_profile=="Highly generalist":
+                    PROB_go_core_region=0.05                
+                if Form1.species_profile=="Moderately generalist":
+                    PROB_go_core_region=0.05
+                if Form1.species_profile=="Habitat dependent":
+                    PROB_go_core_region=0.1
+                if Form1.species_profile=="Frag. dependent":
+                    PROB_go_core_region=0.3 
+                if Form1.species_profile=="Core dependent":
+                    PROB_go_core_region=0.7
+                    
+                if distfromedgePix[0]*Form1.spatialresolution< (-90):
+                    #when position in relation to edge is > (-) 80 m 
+                    #then the individual can move freely
+                    #Based on Hansbauer et al 2008 - for C.caudata species
+                    PROB_go_core_region=0.05
+                    
+                if random.uniform(0,1)<PROB_go_core_region: #FORCE go to core of habitats
+                    max_distfromedgePix=min(distfromedgePix)
+                    #### MAX DIST FROM EDGE is equal to min(distfromedgePix)
+                    
+                    for OnHabitatPosition in range(len(modified_indiv_xy_listposition)):
+                        if distfromedgePix[OnHabitatPosition]==max_distfromedgePix:
+                            modified_indiv_xy[indiv][0]=modified_indiv_xy_listposition[OnHabitatPosition][0]
+                            modified_indiv_xy[indiv][1]=modified_indiv_xy_listposition[OnHabitatPosition][1]
+                else: #pickup a random distance THAT is OnHabitatList
+                    modified_indiv_xy[indiv][0]=modified_indiv_xy_listposition[0][0]
+                    modified_indiv_xy[indiv][1]=modified_indiv_xy_listposition[0][1]
+        if indiv_isdispersing[indiv]==1:
+            disdir_aux_XMIN=indiv_dispdirectionX[indiv][0]
+            disdir_aux_XMAX=indiv_dispdirectionX[indiv][1]
+            disdir_aux_YMIN=indiv_dispdirectionY[indiv][0]
+            disdir_aux_YMAX=indiv_dispdirectionY[indiv][1]
+            if random.uniform(0,1)<0.2:  #50% of a movements of the dispersing individual will follow a main direction
+                modified_indiv_xy[indiv][0]+=random.uniform(disdir_aux_XMIN,disdir_aux_XMAX)*Form1.movement_dist_sigma_pixel*Form1.when_dispersing_distance_factor   # random xpos BUT with preferencial direction
+                modified_indiv_xy[indiv][1]+=random.uniform(disdir_aux_YMIN,disdir_aux_YMAX)*Form1.movement_dist_sigma_pixel*Form1.when_dispersing_distance_factor   # random xpos BUT with preferencial direction
+            else:
+                modified_indiv_xy[indiv][0]+=random.normalvariate(mu=0,sigma=Form1.movement_dist_sigma_pixel)*Form1.when_dispersing_distance_factor   # random xpos
+                modified_indiv_xy[indiv][1]+=random.normalvariate(mu=0,sigma=Form1.movement_dist_sigma_pixel)*Form1.when_dispersing_distance_factor   # random ypos
+            
+        
+        x2y2=[[modified_indiv_xy[indiv][0],modified_indiv_xy[indiv][1]]]
+        x2y2, changed_quadrant_psico = check_landscaperange(x2y2, Form1.landscape_matrix)
+        x2=x2y2[0][0]
+        y2=x2y2[0][1]
+        if changed_quadrant_psico[0][0] != 0:
+            x2 = x2 - changed_quadrant_psico[0][0]*511
+        if changed_quadrant_psico[0][1] != 0:
+            y2 = y2 - changed_quadrant_psico[0][0]*511        
+        #if changed_quadrant_psico[0][0]==1:
+            #x2=x2-511
+        #if changed_quadrant_psico[0][0]==-1:
+            #x2=x2+511
+        #if changed_quadrant_psico[0][1]==1:
+            #y2=y2-511
+        #if changed_quadrant_psico[0][1]==-1:
+            #y2=y2+511            
+        #y2=modified_indiv_xy[indiv][1]
+        dist=math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1))
+        if abs(dist)>500 or dist<0: #CHECK - I need to check when the distance is computed wrongly
+            #print "error on Total Distance estimation\n"
+            dist=0
+        indiv_totaldistance[indiv]+=dist
+        ### faz sentido corrigir a distancia aqui?!?!
+        
+    modified_indiv_xy, changed_quadrant = check_landscaperange(modified_indiv_xy, Form1.landscape_matrix)
+    return modified_indiv_xy, indiv_totaldistance, changed_quadrant
+
+
+#---------------------------------------------------
+# Output models
+#---------------------------------------------------
+from create_synthesis import create_synthesis
+#---------------------------------------------------
 def organize_output(moment, grassname_habmat, isdispersing, isfemale, islive, totaldistance, effectivedistance, experiment_info, actualrun, actual_step, actual_movementcost, timestep_waslive, number_of_meetings, LOCI_start, LOCI_end):
+    """
+    Is there a problem (output name) if nruns > 9999? # Is "myzeros"really used??
+    # !!!!!!!!!! a virgula esta correta????
+    # da pra verificar se habqual ja existe, acho... se foi definida ali em cima, nao precisa recalcular
+    
+    This function writes the output - what piece of information is going to be saved,
+    how files are going to look like etc.
+    Input (Information to be saved):
+    - moment:
+    - grassname_habmat:
+    - isdispersing:
+    - isfemale:
+    - islive:
+    - totaldistance:
+    - effectivedistance:
+    - experiment_info:
+    - actualrun:
+    - actual_step:
+    - actual_movementcost:
+    - timestep_waslive:
+    - number_of_meetings:
+    - LOCI_start:
+    - LOCI_end: 
+    Output (files):
+    - output_prefix_indiv_step.txt: summary of individual information during the simulation
+    - output_prefix_landscape_step.txt: summary of landscape information during the simulation
+    - output_prefix_indiv.txt: summary of individual information at the end of the simulation
+    - output_prefix_landscape.txt: summary of landscape information at the end of the simulation
+    """    
 
     if actualrun<9:
         myzeros="000"
@@ -321,167 +512,6 @@ def organize_output(moment, grassname_habmat, isdispersing, isfemale, islive, to
             file_output_landscape.close()
     create_synthesis(output_filename_indiv)
 
-
-
-#---------------------------------------------------
-
-#----------------------------------------------------------------------
-
-def get_listofposition(modified_indiv_xy_startpos):
-    n_positions=20
-    listofpositions=[]
-    for pos in range(n_positions):
-        deltaX=random.uniform(-Form1.movement_dist_sigma_pixel, Form1.movement_dist_sigma_pixel)
-        deltaY=random.uniform(-Form1.movement_dist_sigma_pixel, Form1.movement_dist_sigma_pixel)
-        listofpositions.append([modified_indiv_xy_startpos[0]+deltaX, modified_indiv_xy_startpos[1]+deltaY])
-
-    listofpositions, changed_quadrante_psicologic = check_landscaperange(listofpositions, Form1.landscape_matrix)
-    return listofpositions
-
-#----------------------------------------------------------------------
-def OnHabitat(listposition):
-    aux=[]
-    distfromedgePix=[]
-    for i in range(len(listposition)):
-        aux.append([listposition[i][0],listposition[i][1]])
-        
-    OnHabitatList=[] #X, Y
-    OnHabitatEdgedistPixList=[] #DIST from edge
-    
-    for position in range(len(aux)):
-        aux, changed_quadrante=check_landscaperange(aux, Form1.landscape_matrix)
-        YY=aux[position][0]
-        XX=aux[position][1]        
-        row=int(YY)
-        col=int(XX)
-        distfromedgePix.append(Form1.landscape_habdist[row][col])
-
-
-        ##'Random walk','Core dependent','Frag. dependent', 'Habitat dependent', 'Moderately generalist'
-        
-        if distfromedgePix[position]*Form1.spatialresolution<=0 and Form1.species_profile=="Habitat dependent":
-            # <=0 above means the the full patch is considered.. 
-            # corridor (<60m) IS INCLUDED as "habitat patch"
-            OnHabitatList.append([YY,XX])
-            OnHabitatEdgedistPixList.append(Form1.landscape_habdist[row][col])
-            
-        if distfromedgePix[position]*Form1.spatialresolution<(-30) and Form1.species_profile=="Frag. dependent":
-        
-            # < (-30) means 30 meters from edge
-            # so only the fragment is considered.. corridor (<60m)
-            # is NOT INCLUDED as "habitat patch"
-            OnHabitatList.append([YY,XX])
-            OnHabitatEdgedistPixList.append(Form1.landscape_habdist[row][col])
-
-        if distfromedgePix[position]*Form1.spatialresolution<(-30) and Form1.species_profile=="Core dependent":
-            ### I COPYED THIS PART FROM ABOVE ON FEV2010 - CHECK CHECK CHECK m
-            #####  check -30 !!!!
-            # < (-30) means 30 meters from edge
-            # so only the fragment is considered.. corridor (<60m)
-            # is NOT INCLUDED as "habitat patch"
-            OnHabitatList.append([YY,XX])
-            OnHabitatEdgedistPixList.append(Form1.landscape_habdist[row][col])
-            
-        if distfromedgePix[position]*Form1.spatialresolution<=(+30) and Form1.species_profile=="Moderately generalist":
-            # <=+30 above means the the full patch is considered.. 
-            # corridor (<60m) IS INCLUDED as "habitat patch"
-            # Positions <30 of ANY HABITAT PATCH is considered within habitat patch"
-            
-            OnHabitatList.append([YY,XX])
-            OnHabitatEdgedistPixList.append(Form1.landscape_habdist[row][col])
-            
-        if distfromedgePix[position]*Form1.spatialresolution<=(+60) and Form1.species_profile=="Highly generalist":
-            # <=+60 above means the the full patch is considered.. 
-            # corridor (<60m) IS INCLUDED as "habitat patch"
-            # Positions <60 of ANY HABITAT PATCH is considered within habitat patch"
-            
-            OnHabitatList.append([YY,XX])
-            OnHabitatEdgedistPixList.append(Form1.landscape_habdist[row][col])
-
-    return OnHabitatList, OnHabitatEdgedistPixList
-
-#----------------------------------------------------------------------
-def disperse_habitat_dependent(indiv_xy, indiv_isdispersing,indiv_totaldistance,indiv_dispdirectionX,indiv_dispdirectionY):
-    modified_indiv_xy=[]
-    for i in range(len(indiv_xy)):
-        modified_indiv_xy.append([indiv_xy[i][0],indiv_xy[i][1]])
-   
-    for indiv in range(len(modified_indiv_xy)):
-        x1=modified_indiv_xy[indiv][0]
-        y1=modified_indiv_xy[indiv][1]
-        if indiv_isdispersing[indiv]==0:
-            modified_indiv_xy_listposition=get_listofposition(modified_indiv_xy_startpos=modified_indiv_xy[indiv])
-            modified_indiv_xy_listposition, distfromedgePix=OnHabitat(modified_indiv_xy_listposition)
-            
-            if len(modified_indiv_xy_listposition)>0:
-                PROB_go_core_region=0
-
-                if Form1.species_profile=="Highly generalist":
-                    PROB_go_core_region=0.05                
-                if Form1.species_profile=="Moderately generalist":
-                    PROB_go_core_region=0.05
-                if Form1.species_profile=="Habitat dependent":
-                    PROB_go_core_region=0.1
-                if Form1.species_profile=="Frag. dependent":
-                    PROB_go_core_region=0.3 
-                if Form1.species_profile=="Core dependent":
-                    PROB_go_core_region=0.7
-                    
-                if distfromedgePix[0]*Form1.spatialresolution< (-90):
-                    #when position in relation to edge is > (-) 80 m 
-                    #then the individual can move freely
-                    #Based on Hansbauer et al 2008 - for C.caudata species
-                    PROB_go_core_region=0.05
-                    
-                if random.uniform(0,1)<PROB_go_core_region: #FORCE go to core of habitats
-                    max_distfromedgePix=min(distfromedgePix)
-                    #### MAX DIST FROM EDGE is equal to min(distfromedgePix)
-                    
-                    for OnHabitatPosition in range(len(modified_indiv_xy_listposition)):
-                        if distfromedgePix[OnHabitatPosition]==max_distfromedgePix:
-                            modified_indiv_xy[indiv][0]=modified_indiv_xy_listposition[OnHabitatPosition][0]
-                            modified_indiv_xy[indiv][1]=modified_indiv_xy_listposition[OnHabitatPosition][1]
-                else: #pickup a random distance THAT is OnHabitatList
-                    modified_indiv_xy[indiv][0]=modified_indiv_xy_listposition[0][0]
-                    modified_indiv_xy[indiv][1]=modified_indiv_xy_listposition[0][1]
-        if indiv_isdispersing[indiv]==1:
-            disdir_aux_XMIN=indiv_dispdirectionX[indiv][0]
-            disdir_aux_XMAX=indiv_dispdirectionX[indiv][1]
-            disdir_aux_YMIN=indiv_dispdirectionY[indiv][0]
-            disdir_aux_YMAX=indiv_dispdirectionY[indiv][1]
-            if random.uniform(0,1)<0.2:  #50% of a movements of the dispersing individual will follow a main direction
-                modified_indiv_xy[indiv][0]+=random.uniform(disdir_aux_XMIN,disdir_aux_XMAX)*Form1.movement_dist_sigma_pixel*Form1.when_dispersing_distance_factor   # random xpos BUT with preferencial direction
-                modified_indiv_xy[indiv][1]+=random.uniform(disdir_aux_YMIN,disdir_aux_YMAX)*Form1.movement_dist_sigma_pixel*Form1.when_dispersing_distance_factor   # random xpos BUT with preferencial direction
-            else:
-                modified_indiv_xy[indiv][0]+=random.normalvariate(mu=0,sigma=Form1.movement_dist_sigma_pixel)*Form1.when_dispersing_distance_factor   # random xpos
-                modified_indiv_xy[indiv][1]+=random.normalvariate(mu=0,sigma=Form1.movement_dist_sigma_pixel)*Form1.when_dispersing_distance_factor   # random ypos
-            
-        
-        x2y2=[[modified_indiv_xy[indiv][0],modified_indiv_xy[indiv][1]]]
-        x2y2, changed_quadrant_psico = check_landscaperange(x2y2, Form1.landscape_matrix)
-        x2=x2y2[0][0]
-        y2=x2y2[0][1]
-        if changed_quadrant_psico[0][0] != 0:
-            x2 = x2 - changed_quadrant_psico[0][0]*511
-        if changed_quadrant_psico[0][0] != 0:
-            x2 = x2 - changed_quadrant_psico[0][0]*511        
-        #if changed_quadrant_psico[0][0]==1:
-            #x2=x2-511
-        #if changed_quadrant_psico[0][0]==-1:
-            #x2=x2+511
-        #if changed_quadrant_psico[0][1]==1:
-            #y2=y2-511
-        #if changed_quadrant_psico[0][1]==-1:
-            #y2=y2+511            
-        #y2=modified_indiv_xy[indiv][1]
-        dist=math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1))
-        if abs(dist)>500 or dist<0: #CHECK - I need to check when the distance is computed wrongly
-            #print "error on Total Distance estimation\n"
-            dist=0
-        indiv_totaldistance[indiv]+=dist
-        
-    modified_indiv_xy, changed_quadrant = check_landscaperange(modified_indiv_xy, Form1.landscape_matrix)
-    return modified_indiv_xy, indiv_totaldistance, changed_quadrant
 
 #---------------------------------------
 def plot_walk(landscape_matrix, indiv_xy, aux_isdispersing, aux_islive, nruns, aux_isdispersingRESET, timestep):
@@ -1103,7 +1133,7 @@ class Form1(wx.Panel):
                                                 indiv_number_of_meetings[num_of_indiv]=indiv_number_of_meetings[num_of_indiv]+1
                                                 #indiv_number_of_meetings[other_indiv]=indiv_number_of_meetings[other_indiv]+1
                                                 #the above line increment MALE meetings
-                                                indiv_LOCI[num_of_indiv],indiv_LOCI[other_indiv]=gene_exchance(indiv_LOCI_indA=indiv_LOCI[num_of_indiv],indiv_LOCI_indB=indiv_LOCI[other_indiv],LOCI_gene_exchange_rate=Form1.LOCI_gene_exchange_rate)
+                                                indiv_LOCI[num_of_indiv],indiv_LOCI[other_indiv]=gene_exchange(indiv_LOCI_indA=indiv_LOCI[num_of_indiv],indiv_LOCI_indB=indiv_LOCI[other_indiv],LOCI_gene_exchange_rate=Form1.LOCI_gene_exchange_rate)
                                         
                                 if Form1.species_profile=="Habitat dependent":
                                     indiv_whichpatchid[num_of_indiv]=identify_patchid(indiv_xy_position, patchid_map=Form1.landscape_habmat_pid)

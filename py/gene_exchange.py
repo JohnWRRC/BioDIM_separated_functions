@@ -1,6 +1,10 @@
 import random
 
-def gene_exchance(indiv_LOCI_indA,indiv_LOCI_indB,LOCI_gene_exchange_rate):
+def gene_exchange(indiv_LOCI_indA, indiv_LOCI_indB, LOCI_gene_exchange_rate):
+    '''
+    This function...
+    '''
+    
     aux_IndA = []
     aux_IndB = []
     number_of_loci=len(indiv_LOCI_indA)

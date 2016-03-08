@@ -4,10 +4,10 @@ def distance_between_indiv(xy_ind_a,xy_ind_b,spatialresolution):
     """
     This function returns the euclidean distance among two individuals.
     Input:
-     xy_ind_a: coordinates (x,y) of individual a
-     xy_ind_b: coordinates (x,y) of individual b
+    - xy_ind_a: coordinates (x,y) of individual a
+    - xy_ind_b: coordinates (x,y) of individual b
     Output:
-     distMeters: straight line distance among the individuals
+    - distMeters: straight line distance among the individuals
     """    
     a_x=xy_ind_a[0]
     a_y=xy_ind_a[1]

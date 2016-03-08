@@ -1,12 +1,5 @@
-import grass.script as grass
-from PIL import Image
-import wx
 import random
 import re
-import time
-import math
-import os
-#from rpy2 import robjects
 
 def select_landscape_grassnames():
     '''This part read HABMAT file list and return the grassname
